@@ -1,0 +1,36 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2026-01-07T00:00:00.000Z",
+
+  "declined": {
+    "pyright-lsp": {
+      "count": 2,
+      "lastDeclined": "2026-01-06",
+      "reason": "Python 프로젝트 아님"
+    }
+  },
+
+  "installed": {
+    "typescript-lsp": {
+      "date": "2026-01-07",
+      "context": "typescript-project",
+      "source": "recommendation"
+    },
+    "code-review": {
+      "date": "2026-01-07",
+      "context": "productivity",
+      "source": "recommendation"
+    },
+    "sentry": {
+      "date": "2026-01-07",
+      "context": "existing-integration",
+      "source": "project-scan"
+    }
+  },
+
+  "preferences": {
+    "favoriteCategories": ["development", "productivity"],
+    "autoRecommend": true,
+    "quietMode": false
+  }
+}

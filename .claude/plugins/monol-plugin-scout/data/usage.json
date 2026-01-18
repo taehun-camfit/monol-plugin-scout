@@ -1,0 +1,49 @@
+{
+  "lastUpdated": "2026-01-07T00:00:00.000Z",
+  "config": {
+    "unusedThresholdDays": 30,
+    "lowUsageThreshold": 3
+  },
+  "plugins": {
+    "typescript-lsp": {
+      "installed": "2026-01-07",
+      "usageCount": 8,
+      "lastUsed": "2026-01-07"
+    },
+    "code-review": {
+      "installed": "2026-01-07",
+      "usageCount": 15,
+      "lastUsed": "2026-01-07"
+    },
+    "commit-commands": {
+      "installed": "2026-01-07",
+      "usageCount": 23,
+      "lastUsed": "2026-01-07"
+    },
+    "sentry": {
+      "installed": "2026-01-07",
+      "usageCount": 5,
+      "lastUsed": "2026-01-06"
+    },
+    "slack": {
+      "installed": "2026-01-07",
+      "usageCount": 3,
+      "lastUsed": "2026-01-05"
+    },
+    "plugin-dev": {
+      "installed": "2025-11-15",
+      "usageCount": 0,
+      "lastUsed": null
+    },
+    "hookify": {
+      "installed": "2026-01-07",
+      "usageCount": 1,
+      "lastUsed": "2026-01-07"
+    },
+    "old-unused-plugin": {
+      "installed": "2025-10-01",
+      "usageCount": 2,
+      "lastUsed": "2025-10-15"
+    }
+  }
+}

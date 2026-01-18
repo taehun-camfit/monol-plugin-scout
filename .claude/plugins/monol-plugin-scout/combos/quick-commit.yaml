@@ -1,0 +1,15 @@
+# Quick Commit Combo
+# 빠른 커밋 워크플로우
+
+name: quick-commit
+description: "변경사항 빠르게 커밋하고 푸시"
+trigger: "/qc"
+
+steps:
+  - name: "변경사항 커밋"
+    plugin: commit-commands
+    action: commit
+
+  - name: "푸시"
+    plugin: commit-commands
+    action: push

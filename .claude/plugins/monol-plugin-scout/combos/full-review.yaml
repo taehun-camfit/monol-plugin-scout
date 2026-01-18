@@ -1,0 +1,33 @@
+# Full Review Combo
+# PR 생성부터 리뷰까지 원스톱 워크플로우
+
+name: full-review
+description: "변경사항 커밋 → 코드 리뷰 → 보안 검사 → PR 생성"
+trigger: "/full-review"
+
+steps:
+  - name: "변경사항 커밋"
+    plugin: commit-commands
+    action: commit
+    options:
+      includeUntracked: true
+
+  - name: "코드 리뷰"
+    plugin: code-review
+    action: review
+    options:
+      scope: "staged"
+
+  - name: "보안 검사"
+    plugin: security-guidance
+    action: scan
+    optional: true  # 설치 안 되어 있으면 스킵
+
+  - name: "PR 생성"
+    plugin: commit-commands
+    action: pr
+    options:
+      draft: false
+
+# 에러 처리
+on_error: "ask"  # ask | skip | abort

@@ -1,0 +1,76 @@
+# monol-plugin-scout 설정
+# Claude Code 플러그인 마켓플레이스 모니터링 및 추천 설정
+
+# 기본 설정
+general:
+  verbose: false
+  data_dir: "data/"
+
+# 마켓플레이스 스캔 소스
+sources:
+  github: true
+  npm: true
+  local: true
+  # 커스텀 레지스트리 URL (선택사항)
+  custom_registry: ""
+
+# 점수 가중치 (총합 100%)
+scoring:
+  project_match: 40    # 프로젝트 매칭 점수
+  popularity: 30       # 인기도 점수
+  security: 30         # 보안 점수
+
+# 프로젝트 매칭 세부 가중치
+project_match_weights:
+  language: 35         # 언어 매칭
+  framework: 30        # 프레임워크 호환성
+  category: 20         # 카테고리 관련성
+  dependencies: 15     # 의존성 매칭
+
+# 인기도 세부 가중치
+popularity_weights:
+  github_stars: 40     # GitHub 스타 수
+  recent_commits: 35   # 최근 커밋 활동
+  issue_health: 25     # 이슈 건강도
+
+# 보안 세부 가중치
+security_weights:
+  license: 40          # 라이선스 호환성
+  vulnerabilities: 35  # 알려진 취약점
+  author_trust: 25     # 저자 신뢰도
+
+# 자동 추천 설정
+auto_recommend:
+  enabled: true
+  # 작업 완료 후 추천 (Post-task)
+  post_task: true
+  # 최소 점수 (이 이상만 추천)
+  min_score: 60
+  # 최대 추천 수
+  max_suggestions: 3
+
+# 정리 설정 (cleanup)
+cleanup:
+  # 미사용 임계값 (일)
+  unused_days: 30
+  # 저사용 임계값 (회)
+  low_usage_count: 3
+  # 자동 정리 (false = 수동 확인)
+  auto_remove: false
+
+# 캐시 설정
+cache:
+  enabled: true
+  # 캐시 만료 (시간)
+  ttl_hours: 24
+  # 캐시 저장 위치
+  dir: ".cache/"
+
+# 알림 설정
+notifications:
+  # 새 플러그인 발견 시 알림
+  new_plugins: true
+  # 보안 업데이트 알림
+  security_updates: true
+  # 업데이트 가능 알림
+  available_updates: true
