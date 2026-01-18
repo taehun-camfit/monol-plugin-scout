@@ -1,5 +1,5 @@
 ---
-description: 플러그인 비교표 생성 (한글: 비교, 플러그인비교)
+description: 플러그인 비교표 생성
 argument-hint: "<plugin1> <plugin2> [plugin3]"
 allowed-tools: [Read, Glob, Grep, WebFetch]
 ---

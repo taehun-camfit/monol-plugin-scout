@@ -1,6 +1,6 @@
 {
   "name": "monol-plugin-scout",
-  "version": "2.0.5",
+  "version": "2.1.2",
   "description": "Claude Code 플러그인 마켓플레이스 모니터링 및 추천 에이전트",
   "author": "Kent",
   "license": "MIT",
@@ -19,9 +19,14 @@
     "marketplace",
     "monol"
   ],
+  "scripts": {
+    "postinstall": "node scripts/install.js",
+    "preuninstall": "node scripts/uninstall.js"
+  },
   "files": [
     ".claude-plugin",
     "monol-plugin-scout-pkg",
+    "scripts",
     "docs",
     "examples",
     "README.md",

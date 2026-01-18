@@ -1,5 +1,5 @@
 ---
-description: 설치된 플러그인 보안 및 업데이트 점검 (한글: 점검, 보안점검, 업데이트점검)
+description: 설치된 플러그인 보안 및 업데이트 점검
 argument-hint: "[--security | --updates]"
 allowed-tools: [Read, Glob, Bash, WebFetch]
 ---

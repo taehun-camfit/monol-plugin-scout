@@ -1,5 +1,5 @@
 ---
-description: 마켓플레이스 카테고리별 탐색 (한글: 탐색, 마켓플레이스, 플러그인탐색)
+description: 마켓플레이스 카테고리별 탐색
 argument-hint: "[category | --search <keyword>]"
 allowed-tools: [Read, Glob, WebFetch, AskUserQuestion]
 ---

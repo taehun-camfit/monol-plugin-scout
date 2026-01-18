@@ -1,5 +1,5 @@
 ---
-description: 미사용 플러그인 정리 제안 (한글: 정리, 플러그인정리, 미사용정리)
+description: 미사용 플러그인 정리 제안
 argument-hint: "[--dry-run | --force]"
 allowed-tools: [Read, Glob, Bash, AskUserQuestion]
 ---

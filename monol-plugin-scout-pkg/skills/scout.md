@@ -1,5 +1,5 @@
 ---
-description: 플러그인 마켓플레이스 스캔 및 추천 (한글: 스카우트, 플러그인추천, 플러그인찾기)
+description: 플러그인 마켓플레이스 스캔 및 추천
 argument-hint: "[--quick | --category <cat> | compare | cleanup | explore | audit | fork]"
 allowed-tools: [Read, Glob, Grep, Bash, WebFetch, AskUserQuestion]
 ---

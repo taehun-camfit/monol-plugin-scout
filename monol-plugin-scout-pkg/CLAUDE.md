@@ -29,21 +29,32 @@ git clone https://github.com/your/monol-plugin-scout.git ~/monol-plugin-scout
 ```
 
 플러그인 활성화 후:
-- `/scout`, `/scout compare`, `/scout cleanup` 등 스킬 사용 가능
 - 프로젝트 분석 후 맞춤 플러그인 추천
 
 ## 스킬 (Commands)
 
+| 커맨드 | 한글 키워드 | 설명 |
+|--------|-------------|------|
+| `/scout` | 스카우트, 플러그인추천 | 플러그인 추천 |
+| `/compare` | 비교, 플러그인비교 | 플러그인 비교 |
+| `/cleanup` | 정리, 플러그인정리 | 미사용 정리 |
+| `/explore` | 탐색, 마켓플레이스 | 카테고리 탐색 |
+| `/audit` | 점검, 보안점검 | 보안/업데이트 점검 |
+| `/fork` | 포크, 복사 | 플러그인 포크 |
+
+**한글 자연어 입력 지원**: "플러그인 추천해줘", "보안 점검해줘" 등으로 말하면 해당 커맨드가 실행됩니다.
+
+### 상세 옵션
+
 ```
-/scout                    # 프로젝트 분석 후 플러그인 추천
 /scout --quick            # 빠른 스캔 (점수 80+ 만)
 /scout --category <cat>   # 특정 카테고리만 스캔
 
-/scout compare <a> <b>    # 플러그인 비교표 생성
-/scout cleanup            # 미사용 플러그인 정리 제안
-/scout explore [category] # 마켓플레이스 카테고리 탐색
-/scout audit              # 보안 및 업데이트 점검
-/scout fork <src> <name>  # 플러그인 포크
+/compare <a> <b>          # 플러그인 비교표 생성
+/cleanup --dry-run        # 정리 시뮬레이션
+/explore [category]       # 마켓플레이스 카테고리 탐색
+/audit --security         # 보안만 점검
+/fork <src> <name>        # 플러그인 포크
 ```
 
 ## 점수 계산

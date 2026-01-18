@@ -1,5 +1,5 @@
 ---
-description: 플러그인 포크 및 커스터마이징 (한글: 포크, 플러그인포크, 복사)
+description: 플러그인 포크 및 커스터마이징
 argument-hint: "<source-plugin> <new-name> [--local]"
 allowed-tools: [Read, Write, Bash, Glob]
 ---
