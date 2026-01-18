@@ -1,8 +1,7 @@
 ---
 description: 플러그인 포크 및 커스터마이징
-use_when:
-  - 사용자가 플러그인을 커스터마이징하고 싶을 때
-  - 기존 플러그인을 복사해서 수정하고 싶을 때
+argument-hint: "<source-plugin> <new-name> [--local]"
+allowed-tools: [Read, Write, Bash, Glob]
 ---
 
 # /scout fork - 플러그인 포크

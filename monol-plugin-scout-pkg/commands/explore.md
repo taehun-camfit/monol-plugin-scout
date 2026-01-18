@@ -1,8 +1,7 @@
 ---
 description: 마켓플레이스 카테고리별 탐색
-use_when:
-  - 사용자가 마켓플레이스를 둘러보고 싶을 때
-  - 특정 카테고리 플러그인을 찾고 싶을 때
+argument-hint: "[category | --search <keyword>]"
+allowed-tools: [Read, Glob, WebFetch, AskUserQuestion]
 ---
 
 # /scout explore - 마켓플레이스 탐색

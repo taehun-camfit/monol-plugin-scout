@@ -1,8 +1,7 @@
 ---
 description: 설치된 플러그인 보안 및 업데이트 점검
-use_when:
-  - 사용자가 플러그인 보안을 점검하고 싶을 때
-  - 업데이트 가능한 플러그인을 확인하고 싶을 때
+argument-hint: "[--security | --updates]"
+allowed-tools: [Read, Glob, Bash, WebFetch]
 ---
 
 # /scout audit - 보안 및 업데이트 점검

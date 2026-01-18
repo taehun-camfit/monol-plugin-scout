@@ -1,8 +1,7 @@
 ---
 description: 플러그인 비교표 생성
-use_when:
-  - 사용자가 플러그인을 비교하고 싶을 때
-  - 어떤 플러그인을 선택할지 고민할 때
+argument-hint: "<plugin1> <plugin2> [plugin3]"
+allowed-tools: [Read, Glob, Grep, WebFetch]
 ---
 
 # /scout compare - 플러그인 비교

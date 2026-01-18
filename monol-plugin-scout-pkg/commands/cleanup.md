@@ -1,8 +1,7 @@
 ---
 description: 미사용 플러그인 정리 제안
-use_when:
-  - 사용자가 플러그인 정리를 원할 때
-  - 오래된 미사용 플러그인을 찾고 싶을 때
+argument-hint: "[--dry-run | --force]"
+allowed-tools: [Read, Glob, Bash, AskUserQuestion]
 ---
 
 # /scout cleanup - 미사용 플러그인 정리

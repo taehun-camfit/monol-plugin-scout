@@ -1,10 +1,7 @@
 ---
 description: 플러그인 마켓플레이스 스캔 및 추천
-use_when:
-  - 사용자가 "플러그인", "추천", "마켓플레이스" 등을 언급할 때
-  - 프로젝트에 맞는 플러그인을 찾고 싶을 때
-  - 새 프로젝트를 시작할 때
-skills: plugin-evaluation
+argument-hint: "[--quick | --category <cat> | compare | cleanup | explore | audit | fork]"
+allowed-tools: [Read, Glob, Grep, Bash, WebFetch, AskUserQuestion]
 ---
 
 # /scout - 플러그인 마켓플레이스 스캔 및 추천
