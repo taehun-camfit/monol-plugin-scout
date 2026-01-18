@@ -4,6 +4,28 @@
   "description": "Claude Code 플러그인 마켓플레이스 모니터링 및 추천 에이전트",
   "author": "monol",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Camfit-Taehun/monol-plugin-scout.git"
+  },
+  "homepage": "https://github.com/Camfit-Taehun/monol-plugin-scout#readme",
+  "bugs": {
+    "url": "https://github.com/Camfit-Taehun/monol-plugin-scout/issues"
+  },
+  "keywords": [
+    "claude",
+    "claude-code",
+    "plugin",
+    "marketplace",
+    "monol"
+  ],
+  "files": [
+    ".claude",
+    "docs",
+    "examples",
+    "README.md",
+    "CHANGELOG.md"
+  ],
   "commands": "commands/",
   "skills": "skills/"
 }
