@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find:*)",
+      "Bash(chmod:*)",
+      "Bash(CLAUDE_PLUGIN_ROOT=\".\" bash:*)",
+      "Bash(bash:*)"
+    ]
+  }
+}

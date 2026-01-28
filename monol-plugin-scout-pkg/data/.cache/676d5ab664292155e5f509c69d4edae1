@@ -1,0 +1,10 @@
+{
+  "projectRoot": "/Users/kent/Work/monol/monol-plugin-scout/monol-plugin-scout-pkg",
+  "analyzedAt": "2026-01-21T23:41:49Z",
+  "projectTypes": ["claude-plugin"],
+  "frameworks": [],
+  "dependencies": [],
+  "complexity": {"files": 7, "directories": 18, "size": "small"},
+  "suggestedCategories": ["productivity"],
+  "recommendedPlugins": []
+}

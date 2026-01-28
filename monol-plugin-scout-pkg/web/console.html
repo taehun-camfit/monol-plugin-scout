@@ -1,0 +1,2098 @@
+<!DOCTYPE html>
+<html lang="ko" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plugin Scout Console</title>
+  <!-- Monol Design System -->
+  <link rel="stylesheet" href="../../../monol-design/monol-design.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      /* Monol Design System Colors */
+      --bg-primary: var(--monol-bg-base, #0a0a0a);
+      --bg-secondary: var(--monol-bg-elevated, #171717);
+      --bg-tertiary: var(--monol-bg-surface, #1a1a1a);
+      --bg-hover: var(--monol-secondary-hover, #333333);
+      --border-color: var(--monol-border-base, #262626);
+      --text-primary: var(--monol-fg-base, #fafafa);
+      --text-secondary: var(--monol-fg-muted, #a3a3a3);
+      --text-muted: var(--monol-fg-subtle, #737373);
+      --accent-green: #22c55e;
+      --accent-cyan: #06b6d4;
+      --accent-purple: #a855f7;
+      --accent-orange: var(--monol-primary, #f97316);
+      --accent-red: var(--monol-error, #ef4444);
+      --accent-yellow: var(--monol-warning, #f59e0b);
+      --accent-blue: var(--monol-info, #3b82f6);
+      --accent-pink: #ec4899;
+    }
+
+    [data-theme="light"] {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f6f8fa;
+      --bg-tertiary: #eaeef2;
+      --bg-hover: #d0d7de;
+      --border-color: #d0d7de;
+      --text-primary: #1f2328;
+      --text-secondary: #656d76;
+      --text-muted: #8c959f;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.5;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .container { max-width: 1600px; margin: 0 auto; padding: 20px 24px; }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .logo { display: flex; align-items: center; gap: 12px; }
+
+    .logo-icon {
+      width: 44px; height: 44px;
+      background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      box-shadow: 0 4px 12px rgba(0, 255, 136, 0.3);
+    }
+
+    .logo-text h1 {
+      font-size: 20px; font-weight: 700;
+      background: linear-gradient(90deg, var(--accent-green), var(--accent-cyan));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .logo-text span { font-size: 11px; color: var(--text-secondary); }
+
+    .header-center { display: flex; align-items: center; gap: 12px; flex: 1; justify-content: center; max-width: 500px; margin: 0 24px; }
+
+    .search-box {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .search-box:hover { border-color: var(--accent-green); }
+    .search-box span { color: var(--text-muted); font-size: 14px; }
+    .search-box kbd { margin-left: auto; padding: 2px 8px; background: var(--bg-secondary); border-radius: 4px; font-size: 11px; color: var(--text-muted); }
+
+    .header-actions { display: flex; align-items: center; gap: 8px; }
+
+    .btn {
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid var(--border-color);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      transition: all 0.2s;
+      display: flex; align-items: center; gap: 6px;
+      white-space: nowrap;
+    }
+
+    .btn:hover { background: var(--bg-tertiary); border-color: var(--text-muted); }
+    .btn-icon { padding: 8px 10px; }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
+      border: none;
+      color: #0d1117;
+      font-weight: 600;
+    }
+
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0, 255, 136, 0.3); }
+
+    /* Layout */
+    .main-layout { display: grid; grid-template-columns: 1fr 320px; gap: 20px; }
+
+    @media (max-width: 1200px) { .main-layout { grid-template-columns: 1fr; } .sidebar { display: none; } }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      background: var(--bg-secondary);
+      padding: 4px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      overflow-x: auto;
+    }
+
+    .tab {
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      color: var(--text-secondary);
+      transition: all 0.2s;
+      border: none;
+      background: transparent;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tab:hover { color: var(--text-primary); background: var(--bg-tertiary); }
+
+    .tab.active {
+      background: var(--bg-tertiary);
+      color: var(--accent-green);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .tab-badge {
+      padding: 2px 6px;
+      background: var(--accent-green);
+      color: #0d1117;
+      border-radius: 10px;
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    /* Tab Content */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 1400px) { .stats-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 900px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    .stat-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent-green);
+      box-shadow: 0 8px 20px rgba(0, 255, 136, 0.08);
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+    }
+
+    .stat-card.green::before { background: linear-gradient(90deg, var(--accent-green), var(--accent-cyan)); }
+    .stat-card.purple::before { background: linear-gradient(90deg, var(--accent-purple), var(--accent-pink)); }
+    .stat-card.orange::before { background: linear-gradient(90deg, var(--accent-orange), var(--accent-yellow)); }
+    .stat-card.cyan::before { background: linear-gradient(90deg, var(--accent-cyan), var(--accent-blue)); }
+    .stat-card.blue::before { background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple)); }
+
+    .stat-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+    .stat-icon { font-size: 20px; }
+    .stat-trend { font-size: 11px; padding: 2px 6px; border-radius: 4px; font-weight: 500; }
+    .stat-trend.up { background: rgba(0, 255, 136, 0.15); color: var(--accent-green); }
+    .stat-trend.down { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); }
+    .stat-trend.stable { background: rgba(139, 148, 158, 0.15); color: var(--text-secondary); }
+
+    .stat-value { font-size: 28px; font-weight: 700; color: var(--text-primary); margin-bottom: 2px; }
+    .stat-label { font-size: 12px; color: var(--text-secondary); }
+
+    /* Cards */
+    .card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-title-icon {
+      width: 6px;
+      height: 18px;
+      background: var(--accent-green);
+      border-radius: 3px;
+    }
+
+    .card-body { padding: 16px 20px; }
+    .card-body.no-padding { padding: 0; }
+
+    /* Grid layouts */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+    .grid-3 { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 20px; }
+
+    @media (max-width: 900px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+
+    /* Chart */
+    .chart-container { position: relative; height: 220px; width: 100%; }
+
+    /* Lists */
+    .list { list-style: none; }
+
+    .list-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      cursor: pointer;
+      transition: background 0.15s;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .list-item:last-child { border-bottom: none; }
+    .list-item:hover { background: var(--bg-tertiary); }
+
+    .list-rank {
+      width: 24px;
+      height: 24px;
+      background: var(--bg-tertiary);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 600;
+      margin-right: 12px;
+      color: var(--text-muted);
+    }
+
+    .list-rank.top {
+      background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
+      color: #0d1117;
+    }
+
+    .list-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--bg-tertiary);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      margin-right: 12px;
+    }
+
+    .list-info { flex: 1; min-width: 0; }
+    .list-name { font-weight: 500; font-size: 14px; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .list-meta { font-size: 12px; color: var(--text-secondary); }
+
+    .list-stats { text-align: right; margin-left: 12px; }
+    .list-count { font-weight: 600; font-size: 16px; }
+
+    .list-bar {
+      width: 80px;
+      height: 4px;
+      background: var(--bg-tertiary);
+      border-radius: 2px;
+      margin-top: 6px;
+      overflow: hidden;
+    }
+
+    .list-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-green), var(--accent-cyan));
+      border-radius: 2px;
+      transition: width 0.5s ease;
+    }
+
+    .list-bar-fill.purple { background: linear-gradient(90deg, var(--accent-purple), var(--accent-pink)); }
+    .list-bar-fill.orange { background: linear-gradient(90deg, var(--accent-orange), var(--accent-yellow)); }
+
+    /* Status badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .badge-green { background: rgba(0, 255, 136, 0.15); color: var(--accent-green); }
+    .badge-yellow { background: rgba(234, 179, 8, 0.15); color: var(--accent-yellow); }
+    .badge-red { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); }
+    .badge-blue { background: rgba(59, 130, 246, 0.15); color: var(--accent-blue); }
+    .badge-purple { background: rgba(168, 85, 247, 0.15); color: var(--accent-purple); }
+    .badge-gray { background: rgba(139, 148, 158, 0.15); color: var(--text-secondary); }
+
+    /* Full list with filters */
+    .list-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border-color);
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .filter-group { display: flex; gap: 6px; flex-wrap: wrap; }
+
+    .filter-btn {
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      background: var(--bg-tertiary);
+      border: 1px solid transparent;
+      color: var(--text-secondary);
+      transition: all 0.2s;
+    }
+
+    .filter-btn:hover { color: var(--text-primary); }
+    .filter-btn.active { background: var(--accent-green); color: #0d1117; border-color: var(--accent-green); }
+
+    .full-list { max-height: 480px; overflow-y: auto; }
+
+    .full-list-item {
+      display: grid;
+      grid-template-columns: 50px 1fr 100px 100px 100px;
+      align-items: center;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border-color);
+      cursor: pointer;
+      transition: background 0.15s;
+      gap: 12px;
+    }
+
+    .full-list-item:hover { background: var(--bg-tertiary); }
+
+    @media (max-width: 800px) {
+      .full-list-item { grid-template-columns: 40px 1fr 80px; }
+      .full-list-item > *:nth-child(4),
+      .full-list-item > *:nth-child(5) { display: none; }
+    }
+
+    /* Sidebar */
+    .sidebar { display: flex; flex-direction: column; gap: 16px; }
+
+    /* Activity Feed */
+    .activity-list { max-height: 300px; overflow-y: auto; }
+
+    .activity-item {
+      display: flex;
+      gap: 12px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .activity-item:last-child { border-bottom: none; }
+
+    .activity-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .activity-icon.install { background: rgba(0, 255, 136, 0.15); }
+    .activity-icon.usage { background: rgba(0, 212, 255, 0.15); }
+    .activity-icon.update { background: rgba(168, 85, 247, 0.15); }
+    .activity-icon.alert { background: rgba(249, 115, 22, 0.15); }
+
+    .activity-content { flex: 1; min-width: 0; }
+    .activity-text { font-size: 13px; line-height: 1.4; }
+    .activity-text strong { font-weight: 600; }
+    .activity-time { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+    /* Insights */
+    .insight-item {
+      display: flex;
+      gap: 12px;
+      padding: 14px 16px;
+      background: var(--bg-tertiary);
+      border-radius: 10px;
+      margin-bottom: 10px;
+      border-left: 4px solid var(--accent-yellow);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .insight-item:last-child { margin-bottom: 0; }
+    .insight-item:hover { transform: translateX(4px); }
+
+    .insight-item.success { border-left-color: var(--accent-green); }
+    .insight-item.recommendation { border-left-color: var(--accent-cyan); }
+    .insight-item.warning { border-left-color: var(--accent-orange); }
+    .insight-item.error { border-left-color: var(--accent-red); }
+    .insight-item.info { border-left-color: var(--accent-blue); }
+    .insight-item.security { border-left-color: var(--accent-purple); }
+
+    .insight-icon { font-size: 20px; flex-shrink: 0; }
+    .insight-content { flex: 1; }
+    .insight-title { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+    .insight-message { font-size: 13px; margin-bottom: 6px; line-height: 1.4; color: var(--text-secondary); }
+    .insight-action {
+      display: inline-block;
+      font-size: 11px;
+      color: var(--accent-cyan);
+      font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+      background: var(--bg-secondary);
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+
+    /* Health Score */
+    .health-score {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+    }
+
+    .health-circle {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 700;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .health-circle::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      padding: 4px;
+      background: conic-gradient(var(--accent-green) calc(var(--score) * 1%), var(--bg-tertiary) 0);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+    }
+
+    .health-details { flex: 1; }
+    .health-title { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+    .health-item { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-secondary); margin-bottom: 4px; }
+
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.active { display: flex; }
+
+    .modal {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      width: 90%;
+      max-width: 560px;
+      max-height: 85vh;
+      overflow: hidden;
+      animation: modalIn 0.25s ease;
+    }
+
+    @keyframes modalIn { from { opacity: 0; transform: scale(0.95) translateY(-10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .modal-title { font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+
+    .modal-close {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      border: none;
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 18px;
+      transition: all 0.2s;
+    }
+
+    .modal-close:hover { background: var(--bg-hover); color: var(--text-primary); }
+
+    .modal-body { padding: 24px; overflow-y: auto; max-height: 50vh; }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .detail-row:last-child { border-bottom: none; }
+    .detail-label { color: var(--text-secondary); font-size: 14px; }
+    .detail-value { font-weight: 500; font-size: 14px; text-align: right; }
+
+    .modal-footer {
+      display: flex;
+      gap: 12px;
+      padding: 20px 24px;
+      border-top: 1px solid var(--border-color);
+      background: var(--bg-tertiary);
+    }
+
+    .modal-footer .btn { flex: 1; justify-content: center; }
+
+    /* Search Modal */
+    .search-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 2000;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 12vh;
+    }
+
+    .search-modal.active { display: flex; }
+
+    .search-container {
+      width: 90%;
+      max-width: 600px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      overflow: hidden;
+      animation: modalIn 0.2s ease;
+    }
+
+    .search-header {
+      display: flex;
+      align-items: center;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-color);
+      gap: 12px;
+    }
+
+    .search-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      font-size: 16px;
+      color: var(--text-primary);
+    }
+
+    .search-input::placeholder { color: var(--text-muted); }
+
+    .search-tabs {
+      display: flex;
+      padding: 10px 20px;
+      gap: 6px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .search-tab {
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      transition: all 0.2s;
+    }
+
+    .search-tab:hover { color: var(--text-primary); }
+    .search-tab.active { background: var(--accent-green); color: #0d1117; font-weight: 500; }
+
+    .search-results { max-height: 360px; overflow-y: auto; }
+
+    .search-section { padding: 12px 20px; }
+    .search-section-title { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 8px; }
+
+    .search-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .search-item:hover { background: var(--bg-tertiary); }
+    .search-item.selected { background: var(--bg-tertiary); outline: 2px solid var(--accent-green); }
+
+    .search-item-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    .search-item-icon.installed { background: rgba(0, 255, 136, 0.15); }
+    .search-item-icon.marketplace { background: rgba(0, 212, 255, 0.15); }
+
+    .search-item-info { flex: 1; min-width: 0; }
+    .search-item-name { font-weight: 500; font-size: 14px; }
+    .search-item-desc { font-size: 12px; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .search-item-meta { text-align: right; font-size: 11px; color: var(--text-muted); }
+
+    .search-empty { padding: 40px 20px; text-align: center; color: var(--text-secondary); }
+    .search-empty-icon { font-size: 40px; margin-bottom: 12px; opacity: 0.5; }
+
+    .search-footer {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 20px;
+      border-top: 1px solid var(--border-color);
+      background: var(--bg-tertiary);
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .search-footer kbd { padding: 2px 6px; background: var(--bg-secondary); border-radius: 4px; margin: 0 2px; }
+
+    /* Settings Panel */
+    .settings-section { margin-bottom: 24px; }
+    .settings-section:last-child { margin-bottom: 0; }
+    .settings-section-title { font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 12px; }
+
+    .settings-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .settings-item:last-child { border-bottom: none; }
+    .settings-item-label { font-size: 14px; }
+    .settings-item-desc { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+
+    .toggle {
+      width: 44px;
+      height: 24px;
+      background: var(--bg-tertiary);
+      border-radius: 12px;
+      position: relative;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .toggle.active { background: var(--accent-green); }
+
+    .toggle::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.2s;
+    }
+
+    .toggle.active::after { transform: translateX(20px); }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      padding: 14px 20px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--accent-green);
+      border-radius: 12px;
+      color: var(--text-primary);
+      font-size: 14px;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      z-index: 3000;
+      animation: slideIn 0.3s ease;
+    }
+
+    .toast.show { display: flex; }
+
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 20px 0;
+      margin-top: 20px;
+      border-top: 1px solid var(--border-color);
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .header { flex-wrap: wrap; gap: 12px; }
+      .header-center { order: 3; width: 100%; margin: 0; max-width: none; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .tabs { padding: 4px; gap: 2px; }
+      .tab { padding: 8px 12px; font-size: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo">
+        <div class="logo-icon">🔌</div>
+        <div class="logo-text">
+          <h1>Plugin Scout</h1>
+          <span>Console v2.5.0 · Last sync: <span id="lastSync">--</span></span>
+        </div>
+      </div>
+
+      <div class="header-center">
+        <div class="search-box" onclick="openSearch()">
+          <span>🔍</span>
+          <span>Search plugins...</span>
+          <kbd>⌘K</kbd>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button class="btn btn-icon" onclick="toggleTheme()" title="Toggle theme">🌙</button>
+        <button class="btn btn-icon" onclick="openSettings()" title="Settings">⚙️</button>
+        <button class="btn" onclick="exportData()">📤 Export</button>
+        <button class="btn btn-primary" onclick="runScout()">🔍 Scout</button>
+      </div>
+    </header>
+
+    <div class="main-layout">
+      <main class="main-content">
+        <!-- Tabs -->
+        <nav class="tabs">
+          <button class="tab active" data-tab="overview">📊 Overview</button>
+          <button class="tab" data-tab="plugins">🔌 Plugins <span class="tab-badge" id="pluginCount">0</span></button>
+          <button class="tab" data-tab="users">👥 Team</button>
+          <button class="tab" data-tab="marketplace">🏪 Marketplace</button>
+          <button class="tab" data-tab="insights">💡 Insights <span class="tab-badge" id="insightCount">0</span></button>
+        </nav>
+
+        <!-- Overview Tab -->
+        <div class="tab-content active" id="overview">
+          <section class="stats-grid">
+            <div class="stat-card green" onclick="showTab('plugins')">
+              <div class="stat-header">
+                <span class="stat-icon">🔌</span>
+                <span class="stat-trend up" id="pluginTrend">+2</span>
+              </div>
+              <div class="stat-value" id="totalPlugins">0</div>
+              <div class="stat-label">Installed Plugins</div>
+            </div>
+            <div class="stat-card purple">
+              <div class="stat-header">
+                <span class="stat-icon">📊</span>
+                <span class="stat-trend up" id="usageTrend">+18%</span>
+              </div>
+              <div class="stat-value" id="totalUsage">0</div>
+              <div class="stat-label">Total Usage</div>
+            </div>
+            <div class="stat-card orange">
+              <div class="stat-header">
+                <span class="stat-icon">🔄</span>
+                <span class="stat-trend up" id="sessionTrend">+5</span>
+              </div>
+              <div class="stat-value" id="totalSessions">0</div>
+              <div class="stat-label">Sessions</div>
+            </div>
+            <div class="stat-card cyan" onclick="showTab('users')">
+              <div class="stat-header">
+                <span class="stat-icon">👥</span>
+                <span class="stat-trend stable">-</span>
+              </div>
+              <div class="stat-value" id="totalUsers">0</div>
+              <div class="stat-label">Team Members</div>
+            </div>
+            <div class="stat-card blue">
+              <div class="stat-header">
+                <span class="stat-icon">⚡</span>
+                <span class="stat-trend up">+12%</span>
+              </div>
+              <div class="stat-value" id="avgDaily">0</div>
+              <div class="stat-label">Avg Daily Usage</div>
+            </div>
+          </section>
+
+          <section class="grid-3">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title"><span class="card-title-icon"></span>Usage Trend (14 Days)</div>
+              </div>
+              <div class="card-body">
+                <div class="chart-container">
+                  <canvas id="usageChart"></canvas>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title"><span class="card-title-icon"></span>By Category</div>
+              </div>
+              <div class="card-body">
+                <div class="chart-container">
+                  <canvas id="categoryChart"></canvas>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="grid-2">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title"><span class="card-title-icon"></span>Most Used Plugins</div>
+                <button class="btn" onclick="showTab('plugins')">View All →</button>
+              </div>
+              <div class="card-body no-padding">
+                <ul class="list" id="topPluginsList"></ul>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title"><span class="card-title-icon"></span>Top Contributors</div>
+                <button class="btn" onclick="showTab('users')">View All →</button>
+              </div>
+              <div class="card-body no-padding">
+                <ul class="list" id="topUsersList"></ul>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- Plugins Tab -->
+        <div class="tab-content" id="plugins">
+          <div class="card">
+            <div class="list-controls">
+              <div class="filter-group">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="active">Active</button>
+                <button class="filter-btn" data-filter="inactive">Inactive</button>
+                <button class="filter-btn" data-filter="dormant">Dormant</button>
+              </div>
+              <div class="filter-group">
+                <button class="btn" onclick="sortPlugins('usage')">Sort: Usage</button>
+                <button class="btn" onclick="sortPlugins('name')">Sort: Name</button>
+                <button class="btn" onclick="sortPlugins('recent')">Sort: Recent</button>
+              </div>
+            </div>
+            <div class="full-list" id="fullPluginsList"></div>
+          </div>
+        </div>
+
+        <!-- Users Tab -->
+        <div class="tab-content" id="users">
+          <div class="card">
+            <div class="list-controls">
+              <div class="filter-group">
+                <button class="filter-btn active" data-filter="all">All Members</button>
+                <button class="filter-btn" data-filter="active">Active Today</button>
+                <button class="filter-btn" data-filter="week">This Week</button>
+              </div>
+              <div class="filter-group">
+                <button class="btn" onclick="sortUsers('sessions')">Sort: Sessions</button>
+                <button class="btn" onclick="sortUsers('usage')">Sort: Usage</button>
+                <button class="btn" onclick="sortUsers('name')">Sort: Name</button>
+              </div>
+            </div>
+            <div class="full-list" id="fullUsersList"></div>
+          </div>
+        </div>
+
+        <!-- Marketplace Tab -->
+        <div class="tab-content" id="marketplace">
+          <div class="card">
+            <div class="list-controls">
+              <div class="filter-group" id="categoryFilters"></div>
+            </div>
+            <div class="full-list" id="marketplaceList"></div>
+          </div>
+        </div>
+
+        <!-- Insights Tab -->
+        <div class="tab-content" id="insights">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><span class="card-title-icon"></span>Recommendations & Insights</div>
+              <button class="btn btn-primary" onclick="runAudit()">🔍 Run Audit</button>
+            </div>
+            <div class="card-body" id="insightsList"></div>
+          </div>
+        </div>
+      </main>
+
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <!-- Health Score -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><span class="card-title-icon"></span>Plugin Health</div>
+          </div>
+          <div class="health-score">
+            <div class="health-circle" id="healthCircle" style="--score: 85">85</div>
+            <div class="health-details">
+              <div class="health-title">Good Standing</div>
+              <div class="health-item"><span>Active plugins</span><span id="healthActive">0/0</span></div>
+              <div class="health-item"><span>Up to date</span><span id="healthUpdated">0/0</span></div>
+              <div class="health-item"><span>Security issues</span><span id="healthSecurity">0</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Activity Feed -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><span class="card-title-icon"></span>Recent Activity</div>
+          </div>
+          <div class="card-body no-padding">
+            <div class="activity-list" id="activityList"></div>
+          </div>
+        </div>
+
+        <!-- Quick Insights -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><span class="card-title-icon"></span>Quick Insights</div>
+          </div>
+          <div class="card-body" id="quickInsights"></div>
+        </div>
+      </aside>
+    </div>
+
+    <footer class="footer">
+      Plugin Scout Console · Powered by Claude Code · <span id="currentUser">--</span>
+    </footer>
+  </div>
+
+  <!-- Modals -->
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title" id="modalTitle">Details</div>
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+      <div class="modal-footer" id="modalFooter"></div>
+    </div>
+  </div>
+
+  <!-- Search Modal -->
+  <div class="search-modal" id="searchModal" onclick="closeSearch(event)">
+    <div class="search-container" onclick="event.stopPropagation()">
+      <div class="search-header">
+        <span style="font-size: 18px;">🔍</span>
+        <input type="text" class="search-input" id="searchInput" placeholder="Search plugins, users, commands..." autocomplete="off" oninput="handleSearch()">
+        <button class="btn" onclick="closeSearch()" style="padding: 4px 10px;">ESC</button>
+      </div>
+      <div class="search-tabs">
+        <button class="search-tab active" data-search-tab="all">All</button>
+        <button class="search-tab" data-search-tab="installed">Installed</button>
+        <button class="search-tab" data-search-tab="marketplace">Marketplace</button>
+        <button class="search-tab" data-search-tab="users">Users</button>
+      </div>
+      <div class="search-results" id="searchResults">
+        <div class="search-empty">
+          <div class="search-empty-icon">🔍</div>
+          <div>Type to search plugins, users, or marketplace</div>
+        </div>
+      </div>
+      <div class="search-footer">
+        <span><kbd>↑</kbd><kbd>↓</kbd> Navigate</span>
+        <span><kbd>Enter</kbd> Select</span>
+        <span><kbd>ESC</kbd> Close</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="modal-overlay" id="settingsOverlay" onclick="closeSettings(event)">
+    <div class="modal" onclick="event.stopPropagation()" style="max-width: 480px;">
+      <div class="modal-header">
+        <div class="modal-title">⚙️ Settings</div>
+        <button class="modal-close" onclick="closeSettings()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="settings-section">
+          <div class="settings-section-title">Appearance</div>
+          <div class="settings-item">
+            <div>
+              <div class="settings-item-label">Dark Mode</div>
+              <div class="settings-item-desc">Use dark theme for the console</div>
+            </div>
+            <div class="toggle active" id="darkModeToggle" onclick="toggleTheme()"></div>
+          </div>
+        </div>
+        <div class="settings-section">
+          <div class="settings-section-title">Notifications</div>
+          <div class="settings-item">
+            <div>
+              <div class="settings-item-label">Auto Recommendations</div>
+              <div class="settings-item-desc">Show plugin recommendations after tasks</div>
+            </div>
+            <div class="toggle active" id="autoRecommendToggle"></div>
+          </div>
+          <div class="settings-item">
+            <div>
+              <div class="settings-item-label">Security Alerts</div>
+              <div class="settings-item-desc">Notify about security updates</div>
+            </div>
+            <div class="toggle active" id="securityAlertToggle"></div>
+          </div>
+        </div>
+        <div class="settings-section">
+          <div class="settings-section-title">Data</div>
+          <div class="settings-item">
+            <div>
+              <div class="settings-item-label">Usage Tracking</div>
+              <div class="settings-item-desc">Track plugin usage statistics</div>
+            </div>
+            <div class="toggle active" id="usageTrackingToggle"></div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="closeSettings()">Close</button>
+        <button class="btn btn-primary" onclick="saveSettings()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast">
+    <span id="toastIcon">✅</span>
+    <span id="toastMessage">Action completed</span>
+  </div>
+
+  <script>
+    // ===========================================
+    // DATA (Injected by shell script)
+    // ===========================================
+
+    // Local data (from plugin)
+    const USAGE_DATA = __USAGE_DATA__;
+    const ANALYTICS_DATA = __ANALYTICS_DATA__;
+
+    // API data (from server mock)
+    const API_MARKETPLACE = __MARKETPLACE_DATA__;
+    const API_CATEGORIES = __CATEGORIES_DATA__;
+    const API_TRENDING = __TRENDING_DATA__;
+    const API_INSIGHTS = __INSIGHTS_DATA__;
+
+    // ===========================================
+    // PROCESSED DATA
+    // ===========================================
+
+    // Enhanced plugins from local usage data
+    const ENHANCED_PLUGINS = {
+      'commit-commands': {
+        installed: '2025-11-15', usageCount: 847, lastUsed: '2026-01-19',
+        description: 'Git commit message generator and automation',
+        category: 'productivity', version: '3.2.1', author: 'monol'
+      },
+      'code-review': {
+        installed: '2025-11-20', usageCount: 623, lastUsed: '2026-01-19',
+        description: 'Automated code review with best practices',
+        category: 'productivity', version: '2.8.0', author: 'monol'
+      },
+      'typescript-lsp': {
+        installed: '2025-12-01', usageCount: 412, lastUsed: '2026-01-19',
+        description: 'TypeScript language server integration',
+        category: 'development', version: '1.5.2', author: 'claude-community'
+      },
+      'test-runner': {
+        installed: '2025-12-10', usageCount: 356, lastUsed: '2026-01-19',
+        description: 'Run and manage tests from Claude',
+        category: 'testing', version: '2.1.0', author: 'monol'
+      },
+      'docker-helper': {
+        installed: '2025-12-15', usageCount: 289, lastUsed: '2026-01-18',
+        description: 'Docker container management',
+        category: 'devops', version: '1.8.3', author: 'devops-team'
+      },
+      'sentry': {
+        installed: '2026-01-02', usageCount: 234, lastUsed: '2026-01-18',
+        description: 'Error tracking with Sentry integration',
+        category: 'monitoring', version: '4.0.1', author: 'sentry-official'
+      },
+      'slack': {
+        installed: '2026-01-05', usageCount: 198, lastUsed: '2026-01-17',
+        description: 'Slack notifications and messaging',
+        category: 'integration', version: '2.3.0', author: 'slack-labs'
+      },
+      'prettier-format': {
+        installed: '2025-11-25', usageCount: 567, lastUsed: '2026-01-19',
+        description: 'Code formatting with Prettier',
+        category: 'productivity', version: '3.0.0', author: 'prettier-team'
+      },
+      'eslint-fix': {
+        installed: '2025-11-25', usageCount: 489, lastUsed: '2026-01-19',
+        description: 'ESLint auto-fix integration',
+        category: 'productivity', version: '2.5.1', author: 'eslint-team'
+      },
+      'git-hooks': {
+        installed: '2025-12-20', usageCount: 312, lastUsed: '2026-01-19',
+        description: 'Git hooks manager for Claude Code',
+        category: 'development', version: '1.4.0', author: 'monol'
+      },
+      'db-query': {
+        installed: '2026-01-08', usageCount: 156, lastUsed: '2026-01-18',
+        description: 'Database query builder and executor',
+        category: 'database', version: '1.2.0', author: 'db-tools'
+      },
+      'api-tester': {
+        installed: '2026-01-10', usageCount: 134, lastUsed: '2026-01-17',
+        description: 'REST API testing and documentation',
+        category: 'testing', version: '1.1.0', author: 'api-team'
+      },
+      'aws-toolkit': {
+        installed: '2025-12-28', usageCount: 178, lastUsed: '2026-01-16',
+        description: 'AWS service integration',
+        category: 'cloud', version: '2.0.0', author: 'aws-community'
+      },
+      'k8s-helper': {
+        installed: '2026-01-03', usageCount: 145, lastUsed: '2026-01-15',
+        description: 'Kubernetes deployment helper',
+        category: 'devops', version: '1.3.0', author: 'k8s-team'
+      },
+      'memo-pad': {
+        installed: '2025-12-05', usageCount: 87, lastUsed: '2026-01-10',
+        description: 'Quick notes and snippets',
+        category: 'productivity', version: '1.0.5', author: 'utils-team'
+      },
+      'old-formatter': {
+        installed: '2025-09-15', usageCount: 23, lastUsed: '2025-11-20',
+        description: 'Legacy code formatter (deprecated)',
+        category: 'productivity', version: '0.9.0', author: 'legacy'
+      },
+      'unused-plugin': {
+        installed: '2025-10-01', usageCount: 5, lastUsed: '2025-10-10',
+        description: 'Plugin that was never really used',
+        category: 'misc', version: '1.0.0', author: 'unknown'
+      },
+      'scout': {
+        installed: '2026-01-15', usageCount: 45, lastUsed: '2026-01-19',
+        description: 'Plugin marketplace monitoring',
+        category: 'productivity', version: '2.5.0', author: 'monol'
+      }
+    };
+
+    const ENHANCED_USERS = {
+      'kent': {
+        avatar: '👨‍💻', role: 'Lead Developer',
+        plugins: {
+          'commit-commands': { usageCount: 234, lastUsed: '2026-01-19' },
+          'code-review': { usageCount: 189, lastUsed: '2026-01-19' },
+          'typescript-lsp': { usageCount: 156, lastUsed: '2026-01-19' },
+          'prettier-format': { usageCount: 145, lastUsed: '2026-01-19' },
+          'eslint-fix': { usageCount: 134, lastUsed: '2026-01-19' },
+          'test-runner': { usageCount: 98, lastUsed: '2026-01-18' },
+          'scout': { usageCount: 32, lastUsed: '2026-01-19' }
+        },
+        sessions: 156, lastActive: '2026-01-19', firstSeen: '2025-11-15'
+      },
+      'sarah': {
+        avatar: '👩‍💻', role: 'Senior Developer',
+        plugins: {
+          'commit-commands': { usageCount: 198, lastUsed: '2026-01-19' },
+          'code-review': { usageCount: 167, lastUsed: '2026-01-19' },
+          'test-runner': { usageCount: 134, lastUsed: '2026-01-19' },
+          'docker-helper': { usageCount: 112, lastUsed: '2026-01-18' },
+          'prettier-format': { usageCount: 89, lastUsed: '2026-01-18' }
+        },
+        sessions: 134, lastActive: '2026-01-19', firstSeen: '2025-11-20'
+      },
+      'mike': {
+        avatar: '🧑‍💻', role: 'Backend Developer',
+        plugins: {
+          'db-query': { usageCount: 89, lastUsed: '2026-01-18' },
+          'api-tester': { usageCount: 78, lastUsed: '2026-01-17' },
+          'docker-helper': { usageCount: 67, lastUsed: '2026-01-18' },
+          'commit-commands': { usageCount: 145, lastUsed: '2026-01-18' },
+          'k8s-helper': { usageCount: 56, lastUsed: '2026-01-15' }
+        },
+        sessions: 98, lastActive: '2026-01-18', firstSeen: '2025-12-01'
+      },
+      'emma': {
+        avatar: '👩‍🎨', role: 'Frontend Developer',
+        plugins: {
+          'typescript-lsp': { usageCount: 167, lastUsed: '2026-01-19' },
+          'prettier-format': { usageCount: 156, lastUsed: '2026-01-19' },
+          'eslint-fix': { usageCount: 145, lastUsed: '2026-01-19' },
+          'code-review': { usageCount: 89, lastUsed: '2026-01-18' },
+          'commit-commands': { usageCount: 78, lastUsed: '2026-01-18' }
+        },
+        sessions: 112, lastActive: '2026-01-19', firstSeen: '2025-12-05'
+      },
+      'alex': {
+        avatar: '🧑‍🔧', role: 'DevOps Engineer',
+        plugins: {
+          'docker-helper': { usageCount: 110, lastUsed: '2026-01-18' },
+          'k8s-helper': { usageCount: 89, lastUsed: '2026-01-15' },
+          'aws-toolkit': { usageCount: 78, lastUsed: '2026-01-16' },
+          'sentry': { usageCount: 67, lastUsed: '2026-01-18' },
+          'commit-commands': { usageCount: 56, lastUsed: '2026-01-17' }
+        },
+        sessions: 87, lastActive: '2026-01-18', firstSeen: '2025-12-10'
+      },
+      'jin': {
+        avatar: '👨‍🔬', role: 'QA Engineer',
+        plugins: {
+          'test-runner': { usageCount: 124, lastUsed: '2026-01-19' },
+          'api-tester': { usageCount: 56, lastUsed: '2026-01-17' },
+          'code-review': { usageCount: 45, lastUsed: '2026-01-18' },
+          'commit-commands': { usageCount: 34, lastUsed: '2026-01-17' }
+        },
+        sessions: 67, lastActive: '2026-01-19', firstSeen: '2025-12-15'
+      },
+      'lisa': {
+        avatar: '👩‍💼', role: 'Tech Lead',
+        plugins: {
+          'code-review': { usageCount: 133, lastUsed: '2026-01-18' },
+          'commit-commands': { usageCount: 102, lastUsed: '2026-01-18' },
+          'slack': { usageCount: 89, lastUsed: '2026-01-17' },
+          'sentry': { usageCount: 67, lastUsed: '2026-01-18' }
+        },
+        sessions: 78, lastActive: '2026-01-18', firstSeen: '2025-11-25'
+      }
+    };
+
+    // Use API data for marketplace
+    const MARKETPLACE_DATA = API_MARKETPLACE.plugins || [];
+
+    // Activity feed
+    const ACTIVITY_FEED = [
+      { type: 'usage', user: 'kent', action: 'used', target: 'commit-commands', time: '2 min ago' },
+      { type: 'usage', user: 'sarah', action: 'used', target: 'test-runner', time: '5 min ago' },
+      { type: 'usage', user: 'emma', action: 'used', target: 'typescript-lsp', time: '8 min ago' },
+      { type: 'install', user: 'mike', action: 'installed', target: 'graphql-helper', time: '15 min ago' },
+      { type: 'usage', user: 'jin', action: 'used', target: 'test-runner', time: '22 min ago' },
+      { type: 'update', user: 'system', action: 'updated', target: 'prettier-format to v3.0.0', time: '1 hour ago' },
+      { type: 'usage', user: 'alex', action: 'used', target: 'docker-helper', time: '1 hour ago' },
+      { type: 'alert', user: 'system', action: 'flagged', target: 'old-formatter as deprecated', time: '2 hours ago' },
+      { type: 'install', user: 'lisa', action: 'installed', target: 'scout', time: '3 hours ago' },
+      { type: 'usage', user: 'kent', action: 'used', target: 'code-review', time: '4 hours ago' },
+    ];
+
+    // Use API insights
+    const INSIGHTS = (API_INSIGHTS.insights || []).map(i => {
+      const icons = {
+        recommendation: '💡',
+        warning: '⚠️',
+        info: 'ℹ️',
+        success: '✅',
+        security: '🔒'
+      };
+      return {
+        type: i.type,
+        icon: icons[i.type] || '💡',
+        title: i.title,
+        message: i.message,
+        action: i.action
+      };
+    });
+
+    // Daily usage data for chart (last 14 days)
+    const DAILY_USAGE = [42, 38, 45, 52, 48, 35, 28, 56, 61, 58, 67, 72, 65, 78];
+
+    // ===========================================
+    // STATE
+    // ===========================================
+
+    let currentTheme = 'dark';
+    let currentSearchTab = 'all';
+    let currentPluginFilter = 'all';
+    let currentPluginSort = 'usage';
+    let currentUserFilter = 'all';
+    let currentUserSort = 'sessions';
+    let currentMarketplaceCategory = 'all';
+    let selectedSearchIndex = -1;
+
+    // ===========================================
+    // INITIALIZATION
+    // ===========================================
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initTabs();
+      initFilters();
+      renderAll();
+      initKeyboardShortcuts();
+    });
+
+    function initTabs() {
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', () => showTab(tab.dataset.tab));
+      });
+    }
+
+    function initFilters() {
+      // Plugin filters
+      document.querySelectorAll('#plugins .filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('#plugins .filter-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentPluginFilter = btn.dataset.filter;
+          renderFullPlugins();
+        });
+      });
+
+      // User filters
+      document.querySelectorAll('#users .filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('#users .filter-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentUserFilter = btn.dataset.filter;
+          renderFullUsers();
+        });
+      });
+    }
+
+    function initKeyboardShortcuts() {
+      document.addEventListener('keydown', (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+          e.preventDefault();
+          openSearch();
+        }
+        if (e.key === 'Escape') {
+          closeSearch();
+          closeModal();
+          closeSettings();
+        }
+        // Search navigation
+        if (document.getElementById('searchModal').classList.contains('active')) {
+          const items = document.querySelectorAll('.search-item');
+          if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            selectedSearchIndex = Math.min(selectedSearchIndex + 1, items.length - 1);
+            updateSearchSelection(items);
+          } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            selectedSearchIndex = Math.max(selectedSearchIndex - 1, 0);
+            updateSearchSelection(items);
+          } else if (e.key === 'Enter' && selectedSearchIndex >= 0) {
+            e.preventDefault();
+            items[selectedSearchIndex]?.click();
+          }
+        }
+      });
+    }
+
+    // ===========================================
+    // RENDERING
+    // ===========================================
+
+    function renderAll() {
+      renderStats();
+      renderCharts();
+      renderTopPlugins();
+      renderTopUsers();
+      renderFullPlugins();
+      renderFullUsers();
+      renderMarketplace();
+      renderInsights();
+      renderActivityFeed();
+      renderHealthScore();
+      renderQuickInsights();
+    }
+
+    function renderStats() {
+      const pluginCount = Object.keys(ENHANCED_PLUGINS).length;
+      const totalUsage = Object.values(ENHANCED_PLUGINS).reduce((sum, p) => sum + p.usageCount, 0);
+      const userCount = Object.keys(ENHANCED_USERS).length;
+      const totalSessions = Object.values(ENHANCED_USERS).reduce((sum, u) => sum + u.sessions, 0);
+      const avgDaily = Math.round(DAILY_USAGE.reduce((a, b) => a + b, 0) / DAILY_USAGE.length);
+
+      document.getElementById('totalPlugins').textContent = pluginCount;
+      document.getElementById('totalUsage').textContent = totalUsage.toLocaleString();
+      document.getElementById('totalSessions').textContent = totalSessions.toLocaleString();
+      document.getElementById('totalUsers').textContent = userCount;
+      document.getElementById('avgDaily').textContent = avgDaily;
+
+      document.getElementById('pluginCount').textContent = pluginCount;
+      document.getElementById('insightCount').textContent = INSIGHTS.length;
+
+      document.getElementById('lastSync').textContent = 'Just now';
+      document.getElementById('currentUser').textContent = 'Logged in as kent';
+    }
+
+    function renderCharts() {
+      // Usage Chart
+      const usageCtx = document.getElementById('usageChart').getContext('2d');
+      const labels = Array.from({ length: 14 }, (_, i) => {
+        const d = new Date();
+        d.setDate(d.getDate() - (13 - i));
+        return d.toLocaleDateString('en', { weekday: 'short' });
+      });
+
+      new Chart(usageCtx, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Usage',
+            data: DAILY_USAGE,
+            borderColor: '#00ff88',
+            backgroundColor: 'rgba(0, 255, 136, 0.1)',
+            fill: true,
+            tension: 0.4,
+            pointRadius: 3,
+            pointHoverRadius: 6,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { beginAtZero: true, grid: { color: '#30363d' }, ticks: { color: '#8b949e' } },
+            x: { grid: { display: false }, ticks: { color: '#8b949e', maxRotation: 0 } }
+          }
+        }
+      });
+
+      // Category Chart
+      const catCtx = document.getElementById('categoryChart').getContext('2d');
+      const categoryUsage = {};
+      Object.values(ENHANCED_PLUGINS).forEach(p => {
+        categoryUsage[p.category] = (categoryUsage[p.category] || 0) + p.usageCount;
+      });
+
+      new Chart(catCtx, {
+        type: 'doughnut',
+        data: {
+          labels: Object.keys(categoryUsage).map(c => c.charAt(0).toUpperCase() + c.slice(1)),
+          datasets: [{
+            data: Object.values(categoryUsage),
+            backgroundColor: ['#00ff88', '#00d4ff', '#a855f7', '#f97316', '#eab308', '#3b82f6', '#ef4444', '#ec4899'],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'right',
+              labels: { color: '#e6edf3', padding: 8, font: { size: 11 } }
+            }
+          }
+        }
+      });
+    }
+
+    function renderTopPlugins() {
+      const plugins = Object.entries(ENHANCED_PLUGINS)
+        .map(([name, data]) => ({ name, ...data }))
+        .sort((a, b) => b.usageCount - a.usageCount)
+        .slice(0, 5);
+
+      const maxUsage = plugins[0]?.usageCount || 1;
+
+      document.getElementById('topPluginsList').innerHTML = plugins.map((p, i) => `
+        <li class="list-item" onclick="showPluginDetail('${p.name}')">
+          <div class="list-rank ${i < 3 ? 'top' : ''}">${i + 1}</div>
+          <div class="list-icon">🔌</div>
+          <div class="list-info">
+            <div class="list-name">${p.name}</div>
+            <div class="list-meta">${p.category} · v${p.version}</div>
+          </div>
+          <div class="list-stats">
+            <div class="list-count">${p.usageCount.toLocaleString()}</div>
+            <div class="list-bar"><div class="list-bar-fill" style="width: ${(p.usageCount / maxUsage) * 100}%"></div></div>
+          </div>
+        </li>
+      `).join('');
+    }
+
+    function renderTopUsers() {
+      const users = Object.entries(ENHANCED_USERS)
+        .map(([name, data]) => ({
+          name, ...data,
+          totalUsage: Object.values(data.plugins).reduce((sum, p) => sum + p.usageCount, 0)
+        }))
+        .sort((a, b) => b.sessions - a.sessions)
+        .slice(0, 5);
+
+      const maxSessions = users[0]?.sessions || 1;
+
+      document.getElementById('topUsersList').innerHTML = users.map((u, i) => `
+        <li class="list-item" onclick="showUserDetail('${u.name}')">
+          <div class="list-rank ${i < 3 ? 'top' : ''}">${i + 1}</div>
+          <div class="list-icon">${u.avatar}</div>
+          <div class="list-info">
+            <div class="list-name">${u.name}</div>
+            <div class="list-meta">${u.role} · ${u.totalUsage} uses</div>
+          </div>
+          <div class="list-stats">
+            <div class="list-count">${u.sessions}</div>
+            <div class="list-bar"><div class="list-bar-fill purple" style="width: ${(u.sessions / maxSessions) * 100}%"></div></div>
+          </div>
+        </li>
+      `).join('');
+    }
+
+    function renderFullPlugins() {
+      let plugins = Object.entries(ENHANCED_PLUGINS).map(([name, data]) => ({ name, ...data }));
+
+      // Filter
+      const now = new Date();
+      const weekAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
+      const monthAgo = new Date(now - 30 * 24 * 60 * 60 * 1000);
+
+      if (currentPluginFilter === 'active') {
+        plugins = plugins.filter(p => p.lastUsed && new Date(p.lastUsed) >= weekAgo);
+      } else if (currentPluginFilter === 'inactive') {
+        plugins = plugins.filter(p => {
+          const last = p.lastUsed ? new Date(p.lastUsed) : null;
+          return last && last < weekAgo && last >= monthAgo;
+        });
+      } else if (currentPluginFilter === 'dormant') {
+        plugins = plugins.filter(p => !p.lastUsed || new Date(p.lastUsed) < monthAgo);
+      }
+
+      // Sort
+      if (currentPluginSort === 'usage') {
+        plugins.sort((a, b) => b.usageCount - a.usageCount);
+      } else if (currentPluginSort === 'name') {
+        plugins.sort((a, b) => a.name.localeCompare(b.name));
+      } else if (currentPluginSort === 'recent') {
+        plugins.sort((a, b) => new Date(b.lastUsed || 0) - new Date(a.lastUsed || 0));
+      }
+
+      document.getElementById('fullPluginsList').innerHTML = plugins.map((p, i) => {
+        const lastUsed = p.lastUsed ? new Date(p.lastUsed) : null;
+        let status = 'gray', statusText = 'Never Used';
+        if (lastUsed) {
+          if (lastUsed >= weekAgo) { status = 'green'; statusText = 'Active'; }
+          else if (lastUsed >= monthAgo) { status = 'yellow'; statusText = 'Inactive'; }
+          else { status = 'red'; statusText = 'Dormant'; }
+        }
+
+        return `
+          <div class="full-list-item" onclick="showPluginDetail('${p.name}')">
+            <div class="list-rank ${i < 3 ? 'top' : ''}">${i + 1}</div>
+            <div class="list-info">
+              <div class="list-name">${p.name}</div>
+              <div class="list-meta">${p.description}</div>
+            </div>
+            <div style="text-align: center;"><span class="badge badge-${status}">${statusText}</span></div>
+            <div style="text-align: center; font-weight: 600;">${p.usageCount.toLocaleString()}</div>
+            <div style="text-align: right; color: var(--text-secondary); font-size: 12px;">${p.lastUsed || 'Never'}</div>
+          </div>
+        `;
+      }).join('') || '<div class="search-empty"><div class="search-empty-icon">📭</div><div>No plugins match this filter</div></div>';
+    }
+
+    function renderFullUsers() {
+      let users = Object.entries(ENHANCED_USERS).map(([name, data]) => ({
+        name, ...data,
+        totalUsage: Object.values(data.plugins).reduce((sum, p) => sum + p.usageCount, 0)
+      }));
+
+      // Filter
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const weekAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
+
+      if (currentUserFilter === 'active') {
+        users = users.filter(u => u.lastActive && new Date(u.lastActive) >= today);
+      } else if (currentUserFilter === 'week') {
+        users = users.filter(u => u.lastActive && new Date(u.lastActive) >= weekAgo);
+      }
+
+      // Sort
+      if (currentUserSort === 'sessions') {
+        users.sort((a, b) => b.sessions - a.sessions);
+      } else if (currentUserSort === 'usage') {
+        users.sort((a, b) => b.totalUsage - a.totalUsage);
+      } else if (currentUserSort === 'name') {
+        users.sort((a, b) => a.name.localeCompare(b.name));
+      }
+
+      document.getElementById('fullUsersList').innerHTML = users.map((u, i) => {
+        const pluginCount = Object.keys(u.plugins).length;
+        return `
+          <div class="full-list-item" onclick="showUserDetail('${u.name}')">
+            <div style="display: flex; align-items: center; justify-content: center;">${u.avatar}</div>
+            <div class="list-info">
+              <div class="list-name">${u.name}</div>
+              <div class="list-meta">${u.role} · First seen: ${u.firstSeen}</div>
+            </div>
+            <div style="text-align: center;"><span class="badge badge-green">${pluginCount} plugins</span></div>
+            <div style="text-align: center; font-weight: 600;">${u.sessions}</div>
+            <div style="text-align: right; color: var(--text-secondary); font-size: 12px;">${u.lastActive}</div>
+          </div>
+        `;
+      }).join('') || '<div class="search-empty"><div class="search-empty-icon">👥</div><div>No users match this filter</div></div>';
+    }
+
+    function renderMarketplace() {
+      // Use API categories
+      const apiCategories = API_CATEGORIES.categories || [];
+      const categories = ['all', ...apiCategories.map(c => c.id)];
+
+      document.getElementById('categoryFilters').innerHTML = categories.map(c => {
+        const cat = apiCategories.find(ac => ac.id === c);
+        const label = c === 'all' ? 'All' : (cat ? `${cat.icon} ${cat.name}` : c);
+        return `<button class="filter-btn ${c === currentMarketplaceCategory ? 'active' : ''}" onclick="filterMarketplace('${c}')">${label}</button>`;
+      }).join('');
+
+      let plugins = MARKETPLACE_DATA;
+      if (currentMarketplaceCategory !== 'all') {
+        plugins = plugins.filter(p => p.category === currentMarketplaceCategory);
+      }
+
+      const installedNames = Object.keys(ENHANCED_PLUGINS);
+
+      document.getElementById('marketplaceList').innerHTML = plugins.map((p, i) => {
+        const isInstalled = installedNames.includes(p.name);
+        return `
+          <div class="full-list-item" onclick="showMarketplaceDetail('${p.name}')">
+            <div style="display: flex; align-items: center; justify-content: center; font-size: 20px;">${p.trending ? '🔥' : '📦'}</div>
+            <div class="list-info">
+              <div class="list-name">${p.name} ${p.trending ? '<span class="badge badge-purple">Trending</span>' : ''}</div>
+              <div class="list-meta">${p.description}</div>
+            </div>
+            <div style="text-align: center;"><span class="badge badge-${isInstalled ? 'green' : 'blue'}">${isInstalled ? 'Installed' : 'Available'}</span></div>
+            <div style="text-align: center; font-weight: 500;">⭐ ${p.rating}</div>
+            <div style="text-align: right; color: var(--text-secondary); font-size: 12px;">${formatNumber(p.downloads)} downloads</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderInsights() {
+      document.getElementById('insightsList').innerHTML = INSIGHTS.map(insight => `
+        <div class="insight-item ${insight.type}" onclick="${insight.action ? `executeAction('${insight.action}')` : ''}">
+          <div class="insight-icon">${insight.icon}</div>
+          <div class="insight-content">
+            <div class="insight-title">${insight.title || ''}</div>
+            <div class="insight-message">${insight.message}</div>
+            ${insight.action ? `<span class="insight-action">${insight.action}</span>` : ''}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderActivityFeed() {
+      const icons = { usage: '⚡', install: '📥', update: '🔄', alert: '⚠️' };
+      document.getElementById('activityList').innerHTML = ACTIVITY_FEED.map(a => `
+        <div class="activity-item">
+          <div class="activity-icon ${a.type}">${icons[a.type]}</div>
+          <div class="activity-content">
+            <div class="activity-text"><strong>${a.user}</strong> ${a.action} <strong>${a.target}</strong></div>
+            <div class="activity-time">${a.time}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderHealthScore() {
+      const plugins = Object.values(ENHANCED_PLUGINS);
+      const now = new Date();
+      const weekAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
+
+      const activeCount = plugins.filter(p => p.lastUsed && new Date(p.lastUsed) >= weekAgo).length;
+      const totalCount = plugins.length;
+      const score = Math.round((activeCount / totalCount) * 100);
+
+      document.getElementById('healthCircle').style.setProperty('--score', score);
+      document.getElementById('healthCircle').textContent = score;
+      document.getElementById('healthActive').textContent = `${activeCount}/${totalCount}`;
+      document.getElementById('healthUpdated').textContent = `${totalCount - 2}/${totalCount}`;
+      document.getElementById('healthSecurity').textContent = '0';
+    }
+
+    function renderQuickInsights() {
+      document.getElementById('quickInsights').innerHTML = INSIGHTS.slice(0, 3).map(insight => `
+        <div class="insight-item ${insight.type}" style="margin-bottom: 8px;" onclick="${insight.action ? `executeAction('${insight.action}')` : ''}">
+          <div class="insight-icon" style="font-size: 16px;">${insight.icon}</div>
+          <div class="insight-content">
+            <div class="insight-message" style="font-size: 12px;">${(insight.message || '').substring(0, 80)}${(insight.message || '').length > 80 ? '...' : ''}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // ===========================================
+    // INTERACTIONS
+    // ===========================================
+
+    function showTab(tabId) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tabId));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('active', c.id === tabId));
+    }
+
+    function sortPlugins(by) {
+      currentPluginSort = by;
+      renderFullPlugins();
+      showToast(`Sorted by ${by}`, '📊');
+    }
+
+    function sortUsers(by) {
+      currentUserSort = by;
+      renderFullUsers();
+      showToast(`Sorted by ${by}`, '📊');
+    }
+
+    function filterMarketplace(category) {
+      currentMarketplaceCategory = category;
+      renderMarketplace();
+    }
+
+    function showPluginDetail(name) {
+      const p = ENHANCED_PLUGINS[name];
+      if (!p) return;
+
+      const now = new Date();
+      const lastUsed = p.lastUsed ? new Date(p.lastUsed) : null;
+      let status = 'Never Used', statusClass = 'gray';
+      if (lastUsed) {
+        const daysDiff = Math.floor((now - lastUsed) / (1000 * 60 * 60 * 24));
+        if (daysDiff <= 7) { status = 'Active'; statusClass = 'green'; }
+        else if (daysDiff <= 30) { status = 'Inactive'; statusClass = 'yellow'; }
+        else { status = 'Dormant'; statusClass = 'red'; }
+      }
+
+      document.getElementById('modalTitle').innerHTML = `<span style="font-size: 24px;">🔌</span> ${name}`;
+      document.getElementById('modalBody').innerHTML = `
+        <div class="detail-row"><span class="detail-label">Description</span><span class="detail-value">${p.description}</span></div>
+        <div class="detail-row"><span class="detail-label">Category</span><span class="detail-value" style="text-transform: capitalize;">${p.category}</span></div>
+        <div class="detail-row"><span class="detail-label">Version</span><span class="detail-value">v${p.version}</span></div>
+        <div class="detail-row"><span class="detail-label">Author</span><span class="detail-value">${p.author}</span></div>
+        <div class="detail-row"><span class="detail-label">Installed</span><span class="detail-value">${p.installed}</span></div>
+        <div class="detail-row"><span class="detail-label">Last Used</span><span class="detail-value">${p.lastUsed || 'Never'}</span></div>
+        <div class="detail-row"><span class="detail-label">Usage Count</span><span class="detail-value">${p.usageCount.toLocaleString()}</span></div>
+        <div class="detail-row"><span class="detail-label">Status</span><span class="detail-value"><span class="badge badge-${statusClass}">${status}</span></span></div>
+      `;
+      document.getElementById('modalFooter').innerHTML = `
+        <button class="btn" onclick="closeModal(); showToast('Checking for updates...', '🔄');">Check Update</button>
+        <button class="btn" onclick="closeModal(); showToast('Plugin disabled', '⏸️');">Disable</button>
+        <button class="btn" style="color: var(--accent-red);" onclick="closeModal(); showToast('Run: /scout --uninstall ${name}', '🗑️');">Uninstall</button>
+      `;
+      document.getElementById('modalOverlay').classList.add('active');
+    }
+
+    function showUserDetail(name) {
+      const u = ENHANCED_USERS[name];
+      if (!u) return;
+
+      const pluginList = Object.entries(u.plugins)
+        .sort((a, b) => b[1].usageCount - a[1].usageCount)
+        .map(([n, d]) => `<div style="display: flex; justify-content: space-between; padding: 4px 0;"><span>${n}</span><span style="color: var(--text-secondary);">${d.usageCount} uses</span></div>`)
+        .join('');
+
+      document.getElementById('modalTitle').innerHTML = `<span style="font-size: 24px;">${u.avatar}</span> ${name}`;
+      document.getElementById('modalBody').innerHTML = `
+        <div class="detail-row"><span class="detail-label">Role</span><span class="detail-value">${u.role}</span></div>
+        <div class="detail-row"><span class="detail-label">Sessions</span><span class="detail-value">${u.sessions}</span></div>
+        <div class="detail-row"><span class="detail-label">First Seen</span><span class="detail-value">${u.firstSeen}</span></div>
+        <div class="detail-row"><span class="detail-label">Last Active</span><span class="detail-value">${u.lastActive}</span></div>
+        <div class="detail-row" style="flex-direction: column; align-items: stretch;">
+          <span class="detail-label" style="margin-bottom: 8px;">Plugin Usage</span>
+          <div style="background: var(--bg-tertiary); border-radius: 8px; padding: 12px;">${pluginList}</div>
+        </div>
+      `;
+      document.getElementById('modalFooter').innerHTML = `<button class="btn" onclick="closeModal()">Close</button>`;
+      document.getElementById('modalOverlay').classList.add('active');
+    }
+
+    function showMarketplaceDetail(name) {
+      const p = MARKETPLACE_DATA.find(m => m.name === name);
+      if (!p) return;
+
+      const isInstalled = Object.keys(ENHANCED_PLUGINS).includes(name);
+
+      document.getElementById('modalTitle').innerHTML = `<span style="font-size: 24px;">📦</span> ${name}`;
+      document.getElementById('modalBody').innerHTML = `
+        <div class="detail-row"><span class="detail-label">Description</span><span class="detail-value">${p.description}</span></div>
+        <div class="detail-row"><span class="detail-label">Category</span><span class="detail-value" style="text-transform: capitalize;">${p.category}</span></div>
+        <div class="detail-row"><span class="detail-label">Author</span><span class="detail-value">${p.author || 'Unknown'}</span></div>
+        <div class="detail-row"><span class="detail-label">Version</span><span class="detail-value">v${p.version || '1.0.0'}</span></div>
+        <div class="detail-row"><span class="detail-label">Downloads</span><span class="detail-value">${(p.downloads || 0).toLocaleString()}</span></div>
+        <div class="detail-row"><span class="detail-label">Rating</span><span class="detail-value">⭐ ${p.rating} / 5.0</span></div>
+        <div class="detail-row"><span class="detail-label">Status</span><span class="detail-value"><span class="badge badge-${isInstalled ? 'green' : 'blue'}">${isInstalled ? 'Installed' : 'Available'}</span></span></div>
+        ${p.trending ? '<div class="detail-row"><span class="detail-label">Trending</span><span class="detail-value"><span class="badge badge-purple">🔥 Trending Now</span></span></div>' : ''}
+      `;
+      document.getElementById('modalFooter').innerHTML = isInstalled
+        ? `<button class="btn" onclick="closeModal()">Close</button><button class="btn" style="color: var(--accent-red);" onclick="closeModal(); showToast('Run: /scout --uninstall ${name}', '🗑️');">Uninstall</button>`
+        : `<button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="closeModal(); showToast('Run: /scout --install ${name}', '📥');">Install Plugin</button>`;
+      document.getElementById('modalOverlay').classList.add('active');
+    }
+
+    function closeModal(e) {
+      if (!e || e.target.id === 'modalOverlay') {
+        document.getElementById('modalOverlay').classList.remove('active');
+      }
+    }
+
+    // ===========================================
+    // SEARCH
+    // ===========================================
+
+    function openSearch() {
+      document.getElementById('searchModal').classList.add('active');
+      document.getElementById('searchInput').focus();
+      selectedSearchIndex = -1;
+    }
+
+    function closeSearch(e) {
+      if (!e || e.target.id === 'searchModal') {
+        document.getElementById('searchModal').classList.remove('active');
+        document.getElementById('searchInput').value = '';
+        renderSearchEmpty();
+      }
+    }
+
+    function renderSearchEmpty() {
+      document.getElementById('searchResults').innerHTML = `
+        <div class="search-empty">
+          <div class="search-empty-icon">🔍</div>
+          <div>Type to search plugins, users, or marketplace</div>
+        </div>
+      `;
+    }
+
+    function handleSearch() {
+      const query = document.getElementById('searchInput').value.toLowerCase().trim();
+      if (!query) { renderSearchEmpty(); return; }
+
+      const tab = currentSearchTab;
+      let html = '';
+
+      // Installed plugins
+      if (tab === 'all' || tab === 'installed') {
+        const installed = Object.entries(ENHANCED_PLUGINS)
+          .filter(([name, data]) => name.includes(query) || data.description.toLowerCase().includes(query))
+          .slice(0, 5);
+
+        if (installed.length) {
+          html += `<div class="search-section"><div class="search-section-title">Installed (${installed.length})</div>`;
+          html += installed.map(([name, data]) => `
+            <div class="search-item" onclick="closeSearch(); showPluginDetail('${name}')">
+              <div class="search-item-icon installed">🔌</div>
+              <div class="search-item-info">
+                <div class="search-item-name">${highlight(name, query)}</div>
+                <div class="search-item-desc">${highlight(data.description, query)}</div>
+              </div>
+              <div class="search-item-meta"><span class="badge badge-green">Installed</span></div>
+            </div>
+          `).join('');
+          html += '</div>';
+        }
+      }
+
+      // Marketplace
+      if (tab === 'all' || tab === 'marketplace') {
+        const installedNames = Object.keys(ENHANCED_PLUGINS);
+        const marketplace = MARKETPLACE_DATA
+          .filter(p => !installedNames.includes(p.name))
+          .filter(p => p.name.includes(query) || p.description.toLowerCase().includes(query))
+          .slice(0, 5);
+
+        if (marketplace.length) {
+          html += `<div class="search-section"><div class="search-section-title">Marketplace (${marketplace.length})</div>`;
+          html += marketplace.map(p => `
+            <div class="search-item" onclick="closeSearch(); showMarketplaceDetail('${p.name}')">
+              <div class="search-item-icon marketplace">📦</div>
+              <div class="search-item-info">
+                <div class="search-item-name">${highlight(p.name, query)} ${p.trending ? '<span class="badge badge-purple" style="margin-left: 4px;">🔥</span>' : ''}</div>
+                <div class="search-item-desc">${highlight(p.description, query)}</div>
+              </div>
+              <div class="search-item-meta">${formatNumber(p.downloads)}</div>
+            </div>
+          `).join('');
+          html += '</div>';
+        }
+      }
+
+      // Users
+      if (tab === 'all' || tab === 'users') {
+        const users = Object.entries(ENHANCED_USERS)
+          .filter(([name, data]) => name.includes(query) || data.role.toLowerCase().includes(query))
+          .slice(0, 5);
+
+        if (users.length) {
+          html += `<div class="search-section"><div class="search-section-title">Users (${users.length})</div>`;
+          html += users.map(([name, data]) => `
+            <div class="search-item" onclick="closeSearch(); showUserDetail('${name}')">
+              <div class="search-item-icon" style="background: rgba(168, 85, 247, 0.15);">${data.avatar}</div>
+              <div class="search-item-info">
+                <div class="search-item-name">${highlight(name, query)}</div>
+                <div class="search-item-desc">${highlight(data.role, query)}</div>
+              </div>
+              <div class="search-item-meta">${data.sessions} sessions</div>
+            </div>
+          `).join('');
+          html += '</div>';
+        }
+      }
+
+      document.getElementById('searchResults').innerHTML = html || `
+        <div class="search-empty">
+          <div class="search-empty-icon">🔍</div>
+          <div>No results for "${query}"</div>
+        </div>
+      `;
+      selectedSearchIndex = -1;
+    }
+
+    document.querySelectorAll('.search-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.search-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        currentSearchTab = tab.dataset.searchTab;
+        handleSearch();
+      });
+    });
+
+    function updateSearchSelection(items) {
+      items.forEach((item, i) => {
+        item.classList.toggle('selected', i === selectedSearchIndex);
+        if (i === selectedSearchIndex) item.scrollIntoView({ block: 'nearest' });
+      });
+    }
+
+    function highlight(text, query) {
+      if (!query) return text;
+      return text.replace(new RegExp(`(${query})`, 'gi'), '<strong style="color: var(--accent-green);">$1</strong>');
+    }
+
+    // ===========================================
+    // SETTINGS
+    // ===========================================
+
+    function openSettings() {
+      document.getElementById('settingsOverlay').classList.add('active');
+    }
+
+    function closeSettings(e) {
+      if (!e || e.target.id === 'settingsOverlay') {
+        document.getElementById('settingsOverlay').classList.remove('active');
+      }
+    }
+
+    function saveSettings() {
+      closeSettings();
+      showToast('Settings saved', '✅');
+    }
+
+    function toggleTheme() {
+      currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      document.body.setAttribute('data-theme', currentTheme);
+      document.getElementById('darkModeToggle').classList.toggle('active', currentTheme === 'dark');
+      showToast(`${currentTheme === 'dark' ? 'Dark' : 'Light'} mode enabled`, currentTheme === 'dark' ? '🌙' : '☀️');
+    }
+
+    // ===========================================
+    // ACTIONS
+    // ===========================================
+
+    function runScout() { showToast('Run in terminal: /scout', '🔍'); }
+    function runAudit() { showToast('Run in terminal: /scout audit', '🔍'); }
+    function executeAction(action) { showToast(`Run: ${action}`, '💡'); }
+
+    function exportData() {
+      const data = { plugins: ENHANCED_PLUGINS, users: ENHANCED_USERS, analytics: ANALYTICS_DATA };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `plugin-scout-${new Date().toISOString().split('T')[0]}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('Data exported!', '📤');
+    }
+
+    // ===========================================
+    // UTILITIES
+    // ===========================================
+
+    function formatNumber(n) {
+      if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+      if (n >= 1000) return (n / 1000).toFixed(1) + 'k';
+      return n.toString();
+    }
+
+    function showToast(message, icon = '✅') {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastMessage').textContent = message;
+      document.getElementById('toastIcon').textContent = icon;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+  </script>
+</body>
+</html>

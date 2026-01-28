@@ -2,6 +2,12 @@
 description: 마켓플레이스 카테고리별 탐색
 argument-hint: "[category | --search <keyword>]"
 allowed-tools: [Read, Glob, WebFetch, AskUserQuestion]
+hooks:
+  Stop:
+    - hooks:
+        - type: command
+          command: "bash ${CLAUDE_PLUGIN_ROOT}/hooks/track-usage.sh explore"
+          timeout: 5
 ---
 
 # /scout explore - 마켓플레이스 탐색

@@ -1,0 +1,17 @@
+{
+  "version": "1.0.0",
+  "tasks": [
+    {
+      "id": "779653a6",
+      "type": "cleanup",
+      "interval": "weekly",
+      "target": "all",
+      "message": "Weekly cleanup task",
+      "createdAt": "2026-01-22T00:19:35Z",
+      "nextRun": "2026-01-29T00:19:35Z",
+      "lastRun": null,
+      "enabled": true
+    }
+  ],
+  "lastRun": null
+}

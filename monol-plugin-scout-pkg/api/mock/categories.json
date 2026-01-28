@@ -1,0 +1,81 @@
+{
+  "categories": [
+    {
+      "id": "productivity",
+      "name": "Productivity",
+      "icon": "⚡",
+      "description": "Boost your development workflow",
+      "count": 6
+    },
+    {
+      "id": "development",
+      "name": "Development",
+      "icon": "💻",
+      "description": "Language support and developer tools",
+      "count": 7
+    },
+    {
+      "id": "frontend",
+      "name": "Frontend",
+      "icon": "🎨",
+      "description": "UI frameworks and styling tools",
+      "count": 3
+    },
+    {
+      "id": "testing",
+      "name": "Testing",
+      "icon": "🧪",
+      "description": "Test runners and automation",
+      "count": 4
+    },
+    {
+      "id": "devops",
+      "name": "DevOps",
+      "icon": "🔧",
+      "description": "CI/CD, containers, and infrastructure",
+      "count": 4
+    },
+    {
+      "id": "cloud",
+      "name": "Cloud",
+      "icon": "☁️",
+      "description": "Cloud providers and deployment",
+      "count": 4
+    },
+    {
+      "id": "database",
+      "name": "Database",
+      "icon": "🗄️",
+      "description": "Database tools and query builders",
+      "count": 3
+    },
+    {
+      "id": "ai",
+      "name": "AI & ML",
+      "icon": "🤖",
+      "description": "AI integrations and ML tools",
+      "count": 3
+    },
+    {
+      "id": "monitoring",
+      "name": "Monitoring",
+      "icon": "📊",
+      "description": "Error tracking and observability",
+      "count": 2
+    },
+    {
+      "id": "integration",
+      "name": "Integration",
+      "icon": "🔗",
+      "description": "Third-party service integrations",
+      "count": 3
+    },
+    {
+      "id": "security",
+      "name": "Security",
+      "icon": "🔒",
+      "description": "Security scanning and credentials",
+      "count": 2
+    }
+  ]
+}

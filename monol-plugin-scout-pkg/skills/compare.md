@@ -2,6 +2,12 @@
 description: 플러그인 비교표 생성
 argument-hint: "<plugin1> <plugin2> [plugin3]"
 allowed-tools: [Read, Glob, Grep, WebFetch]
+hooks:
+  Stop:
+    - hooks:
+        - type: command
+          command: "bash ${CLAUDE_PLUGIN_ROOT}/hooks/track-usage.sh compare"
+          timeout: 5
 ---
 
 # /scout compare - 플러그인 비교

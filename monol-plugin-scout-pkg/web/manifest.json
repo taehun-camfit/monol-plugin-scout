@@ -1,0 +1,29 @@
+{
+  "id": "monol-plugin-scout",
+  "name": "Plugin Scout",
+  "version": "2.0.0",
+  "icon": "🔍",
+  "description": "Claude Code 플러그인 마켓플레이스 모니터링 및 추천",
+  "console": {
+    "entry": "console.html",
+    "styles": [],
+    "scripts": []
+  },
+  "components": [
+    "stats-card",
+    "plugin-list",
+    "activity-chart",
+    "overview"
+  ],
+  "tabs": [
+    { "id": "overview", "name": "Overview", "icon": "📊" },
+    { "id": "plugins", "name": "Plugins", "icon": "🔌" },
+    { "id": "recommendations", "name": "Recommendations", "icon": "✨" },
+    { "id": "audit", "name": "Audit", "icon": "🔒" },
+    { "id": "settings", "name": "Settings", "icon": "⚙️" }
+  ],
+  "api": {
+    "baseUrl": "/api/scout",
+    "endpoints": ["stats", "plugins", "recommendations", "audit"]
+  }
+}

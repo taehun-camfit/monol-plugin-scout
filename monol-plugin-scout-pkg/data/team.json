@@ -1,0 +1,53 @@
+{
+  "version": "1.0.0",
+  "teamName": "Plugin Scout Team",
+  "members": {
+    "kent": {
+      "name": "Taehun Kim",
+      "email": "thkim@nextedition.co.kr",
+      "joinedAt": "2026-01-21T23:11:28Z",
+      "lastActive": "2026-01-21T23:11:28Z",
+      "sessions": 1,
+      "pluginsUsed": [],
+      "topPlugins": []
+    },
+    "Taehun Kim": {
+      "name": "Taehun Kim",
+      "email": "thkim@nextedition.co.kr",
+      "joinedAt": "2026-01-21T23:16:11Z",
+      "lastActive": "2026-01-21T23:16:34Z",
+      "sessions": 1,
+      "pluginsUsed": [
+        "scout"
+      ],
+      "topPlugins": []
+    }
+  },
+  "sharedRecommendations": [
+    {
+      "plugin": "eslint-fix",
+      "reason": "코드 품질 향상 필수!",
+      "sharedBy": "kent",
+      "sharedAt": "2026-01-21T23:13:23Z",
+      "votes": 1
+    }
+  ],
+  "sharedSettings": {
+    "defaultPlugins": [],
+    "blockedPlugins": [],
+    "categories": []
+  },
+  "stats": {
+    "totalMembers": 2,
+    "activeMembers": 2,
+    "totalPluginsUsed": 1,
+    "topPlugins": [
+      {
+        "plugin": "scout",
+        "count": 1
+      }
+    ]
+  },
+  "createdAt": "2026-01-21T23:11:28Z",
+  "updatedAt": "2026-01-21T23:22:39Z"
+}

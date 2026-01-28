@@ -1,0 +1,102 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2026-01-18T19:46:25Z",
+  "summary": {
+    "totalPlugins": 11,
+    "activePlugins": 9,
+    "dormantPlugins": 2,
+    "totalUsageCount": 62,
+    "avgDailyUsage": 4.7
+  },
+  "trends": {
+    "weekly": [
+      {
+        "week": "2026-W02",
+        "usageCount": 25,
+        "activePlugins": 5
+      },
+      {
+        "week": "2026-W03",
+        "usageCount": 31,
+        "activePlugins": 6
+      }
+    ],
+    "monthly": [
+      {
+        "month": "2026-01",
+        "usageCount": 56,
+        "newInstalls": 2,
+        "uninstalls": 0
+      }
+    ]
+  },
+  "pluginStats": {
+    "commit-commands": {
+      "usageCount": 23,
+      "usageShare": 41.1,
+      "trend": "up",
+      "lastWeekUsage": 12
+    },
+    "code-review": {
+      "usageCount": 15,
+      "usageShare": 26.8,
+      "trend": "stable",
+      "lastWeekUsage": 8
+    },
+    "typescript-lsp": {
+      "usageCount": 8,
+      "usageShare": 14.3,
+      "trend": "up",
+      "lastWeekUsage": 3
+    },
+    "scout": {
+      "usageCount": 5,
+      "usageShare": 8.9,
+      "trend": "up",
+      "lastWeekUsage": 2
+    },
+    "audit": {
+      "usageCount": 3,
+      "usageShare": 5.4,
+      "trend": "stable",
+      "lastWeekUsage": 2
+    },
+    "console": {
+      "usageCount": 2,
+      "usageShare": 3.6,
+      "trend": "new",
+      "lastWeekUsage": 0
+    }
+  },
+  "userStats": {},
+  "insights": [
+    {
+      "type": "cleanup",
+      "severity": "warning",
+      "message": "plugin-dev이 오래 미사용 상태입니다 (마지막: never)",
+      "action": "/scout cleanup",
+      "generated": "2026-01-18T19:46:25Z"
+    },
+    {
+      "type": "cleanup",
+      "severity": "warning",
+      "message": "old-unused-plugin이 오래 미사용 상태입니다 (마지막: 2025-10-15)",
+      "action": "/scout cleanup",
+      "generated": "2026-01-18T19:46:25Z"
+    },
+    {
+      "type": "trend-up",
+      "severity": "info",
+      "message": "commit-commands이 가장 활발히 사용됩니다 (23회)",
+      "action": "",
+      "generated": "2026-01-18T19:46:25Z"
+    },
+    {
+      "type": "cleanup",
+      "severity": "warning",
+      "message": "plugin-dev이 설치 후 한 번도 사용되지 않았습니다",
+      "action": "/scout cleanup",
+      "generated": "2026-01-18T19:46:25Z"
+    }
+  ]
+}

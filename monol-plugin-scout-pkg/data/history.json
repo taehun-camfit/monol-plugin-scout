@@ -1,36 +1,85 @@
 {
-  "version": "1.0.0",
-  "lastUpdated": "2026-01-07T00:00:00.000Z",
-
+  "version": "2.0.0",
+  "lastUpdated": "2026-01-21T17:51:30Z",
   "declined": {
     "pyright-lsp": {
       "count": 2,
       "lastDeclined": "2026-01-06",
-      "reason": "Python 프로젝트 아님"
+      "reason": "not-relevant",
+      "category": "development",
+      "declinedAt": [
+        "2026-01-05T10:00:00Z",
+        "2026-01-06T14:30:00Z"
+      ]
+    },
+    "ruby-lsp": {
+      "count": 1,
+      "lastDeclined": "2026-01-10",
+      "reason": "wrong-language",
+      "category": "development",
+      "declinedAt": [
+        "2026-01-10T09:00:00Z"
+      ]
     }
   },
-
   "installed": {
     "typescript-lsp": {
       "date": "2026-01-07",
       "context": "typescript-project",
-      "source": "recommendation"
+      "source": "recommendation",
+      "installedAt": "2026-01-07T10:00:00Z"
     },
     "code-review": {
       "date": "2026-01-07",
       "context": "productivity",
-      "source": "recommendation"
+      "source": "recommendation",
+      "installedAt": "2026-01-07T10:05:00Z"
     },
     "sentry": {
       "date": "2026-01-07",
       "context": "existing-integration",
-      "source": "project-scan"
+      "source": "project-scan",
+      "installedAt": "2026-01-07T10:10:00Z"
+    },
+    "commit-commands": {
+      "date": "2026-01-07",
+      "context": "productivity",
+      "source": "manual",
+      "installedAt": "2026-01-07T10:15:00Z"
     }
   },
-
   "preferences": {
-    "favoriteCategories": ["development", "productivity"],
+    "favoriteCategories": [
+      "development",
+      "productivity"
+    ],
+    "blockedCategories": [],
     "autoRecommend": true,
-    "quietMode": false
+    "quietMode": false,
+    "recommendationCooldown": 30,
+    "maxRejectionsBeforeBlock": 3,
+    "maxRecommendationsPerSession": 2,
+    "maxRecommendationsPerDay": 5,
+    "smartTiming": {
+      "onlyAfterCommit": false
+    }
+  },
+  "rejectionPatterns": {
+    "byCategory": {
+      "development": 4
+    },
+    "byReason": {
+      "not-relevant": 1,
+      "wrong-language": 3
+    }
+  },
+  "rejectionReasons": {
+    "not-relevant": "프로젝트와 관련 없음",
+    "wrong-language": "사용하지 않는 언어",
+    "already-have": "유사한 플러그인 이미 있음",
+    "too-complex": "너무 복잡함",
+    "not-trusted": "신뢰할 수 없음",
+    "later": "나중에 설치",
+    "other": "기타"
   }
 }

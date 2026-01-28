@@ -2,6 +2,12 @@
 description: 미사용 플러그인 정리 제안
 argument-hint: "[--dry-run | --force]"
 allowed-tools: [Read, Glob, Bash, AskUserQuestion]
+hooks:
+  Stop:
+    - hooks:
+        - type: command
+          command: "bash ${CLAUDE_PLUGIN_ROOT}/hooks/track-usage.sh cleanup"
+          timeout: 5
 ---
 
 # /scout cleanup - 미사용 플러그인 정리

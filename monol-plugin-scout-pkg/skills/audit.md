@@ -2,6 +2,12 @@
 description: 설치된 플러그인 보안 및 업데이트 점검
 argument-hint: "[--security | --updates]"
 allowed-tools: [Read, Glob, Bash, WebFetch]
+hooks:
+  Stop:
+    - hooks:
+        - type: command
+          command: "bash ${CLAUDE_PLUGIN_ROOT}/hooks/track-usage.sh audit"
+          timeout: 5
 ---
 
 # /scout audit - 보안 및 업데이트 점검

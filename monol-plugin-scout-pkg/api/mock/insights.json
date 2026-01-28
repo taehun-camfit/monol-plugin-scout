@@ -1,0 +1,111 @@
+{
+  "insights": [
+    {
+      "id": "rec-001",
+      "type": "recommendation",
+      "severity": "medium",
+      "title": "Try tailwind-assist",
+      "message": "Based on your TypeScript and frontend usage patterns, tailwind-assist could boost your CSS workflow by 40%.",
+      "action": "/scout install tailwind-assist",
+      "plugin": "tailwind-assist",
+      "reason": "High usage of typescript-lsp and prettier-format suggests frontend development focus",
+      "createdAt": "2026-01-19T00:00:00Z"
+    },
+    {
+      "id": "rec-002",
+      "type": "recommendation",
+      "severity": "low",
+      "title": "Consider playwright-helper",
+      "message": "Your team uses test-runner frequently. Playwright-helper can help with E2E testing automation.",
+      "action": "/scout install playwright-helper",
+      "plugin": "playwright-helper",
+      "reason": "test-runner has 356 uses in your team",
+      "createdAt": "2026-01-19T00:00:00Z"
+    },
+    {
+      "id": "warn-001",
+      "type": "warning",
+      "severity": "medium",
+      "title": "Unused plugin detected",
+      "message": "old-formatter hasn't been used in 60+ days. Consider removing it to keep your setup clean.",
+      "action": "/scout uninstall old-formatter",
+      "plugin": "old-formatter",
+      "reason": "Last used on 2025-11-20",
+      "createdAt": "2026-01-19T00:00:00Z"
+    },
+    {
+      "id": "warn-002",
+      "type": "warning",
+      "severity": "low",
+      "title": "Low usage plugin",
+      "message": "unused-plugin was installed but has only 5 uses. Review if it's still needed.",
+      "action": "/scout uninstall unused-plugin",
+      "plugin": "unused-plugin",
+      "reason": "Only 5 uses since installation",
+      "createdAt": "2026-01-19T00:00:00Z"
+    },
+    {
+      "id": "info-001",
+      "type": "info",
+      "severity": "low",
+      "title": "Top performer",
+      "message": "commit-commands is your most used plugin with 847 uses. Great productivity boost!",
+      "action": null,
+      "plugin": "commit-commands",
+      "reason": "Highest usage count in your installation",
+      "createdAt": "2026-01-19T00:00:00Z"
+    },
+    {
+      "id": "info-002",
+      "type": "info",
+      "severity": "low",
+      "title": "Update available",
+      "message": "prettier-format has a new version (3.0.1) available with bug fixes.",
+      "action": "/scout update prettier-format",
+      "plugin": "prettier-format",
+      "reason": "Current: 3.0.0, Latest: 3.0.1",
+      "createdAt": "2026-01-19T00:00:00Z"
+    },
+    {
+      "id": "security-001",
+      "type": "security",
+      "severity": "high",
+      "title": "Security audit passed",
+      "message": "All 18 installed plugins passed security audit. No vulnerabilities found.",
+      "action": null,
+      "plugin": null,
+      "reason": "Last audit: 2026-01-19",
+      "createdAt": "2026-01-19T00:00:00Z"
+    },
+    {
+      "id": "team-001",
+      "type": "info",
+      "severity": "low",
+      "title": "Team activity",
+      "message": "7 team members are actively using plugins. kent leads with 156 sessions.",
+      "action": null,
+      "plugin": null,
+      "reason": "Team statistics from this week",
+      "createdAt": "2026-01-19T00:00:00Z"
+    },
+    {
+      "id": "trending-001",
+      "type": "recommendation",
+      "severity": "low",
+      "title": "Trending: AI plugins",
+      "message": "AI plugins like openai-bridge and langchain-helper are trending. Explore if they fit your workflow.",
+      "action": "/scout explore ai",
+      "plugin": null,
+      "reason": "AI category has 25%+ weekly growth",
+      "createdAt": "2026-01-19T00:00:00Z"
+    }
+  ],
+  "summary": {
+    "total": 9,
+    "recommendations": 3,
+    "warnings": 2,
+    "info": 3,
+    "security": 1
+  },
+  "generatedAt": "2026-01-19T00:00:00Z"
+}

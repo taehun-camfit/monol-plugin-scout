@@ -1,7 +1,13 @@
 ---
 description: 플러그인 마켓플레이스 스캔 및 추천
-argument-hint: "[--quick | --category <cat> | compare | cleanup | explore | audit | fork]"
+argument-hint: "[--quick | --category <cat> | console | compare | cleanup | explore | audit | fork]"
 allowed-tools: [Read, Glob, Grep, Bash, WebFetch, AskUserQuestion]
+hooks:
+  Stop:
+    - hooks:
+        - type: command
+          command: "bash ${CLAUDE_PLUGIN_ROOT}/hooks/track-usage.sh scout"
+          timeout: 5
 ---
 
 # /scout - 플러그인 마켓플레이스 스캔 및 추천
@@ -19,11 +25,14 @@ allowed-tools: [Read, Glob, Grep, Bash, WebFetch, AskUserQuestion]
 ## 서브커맨드
 
 ```
+/scout console            # 플러그인 대시보드 콘솔 → console.md 참조
 /scout compare <a> <b>    # 플러그인 비교 → compare.md 참조
 /scout cleanup            # 미사용 플러그인 정리 → cleanup.md 참조
 /scout explore [category] # 마켓플레이스 탐색 → explore.md 참조
 /scout audit              # 보안/업데이트 점검 → audit.md 참조
 /scout fork <src> <name>  # 플러그인 포크 → fork.md 참조
+/scout install <plugin>   # 플러그인 설치 → install.md 참조
+/scout uninstall <plugin> # 플러그인 제거 → uninstall.md 참조
 ```
 
 ## 인자: $ARGUMENTS
@@ -32,28 +41,29 @@ allowed-tools: [Read, Glob, Grep, Bash, WebFetch, AskUserQuestion]
 
 ### Phase 1: 프로젝트 컨텍스트 분석
 
-1. **프로젝트 타입 감지**:
-   ```
-   package.json          → Node.js/JavaScript/TypeScript
-   requirements.txt      → Python
-   pyproject.toml        → Python (modern)
-   Cargo.toml            → Rust
-   go.mod                → Go
-   pom.xml / build.gradle → Java
-   composer.json         → PHP
-   Gemfile               → Ruby
+1. **프로젝트 분석기 실행**:
+   ```bash
+   bash ${CLAUDE_PLUGIN_ROOT}/lib/project-analyzer.sh full
    ```
 
-2. **프레임워크 식별** (의존성에서 추출):
-   - React, Vue, Angular, Svelte (frontend)
-   - Express, Fastify, NestJS (Node backend)
-   - FastAPI, Django, Flask (Python)
-   - Spring, Quarkus (Java)
+   결과:
+   - projectTypes: nodejs, typescript, python, etc.
+   - frameworks: react, express, jest, etc.
+   - dependencies: 상위 20개 의존성
+   - suggestedCategories: 추천 카테고리
 
-3. **설치된 플러그인 확인**:
+2. **설치된 플러그인 확인**:
    - `~/.claude/settings.json`의 `enabledPlugins`
    - `.claude/settings.json`의 프로젝트 플러그인
    - 이미 설치된 플러그인은 추천에서 제외
+
+3. **거절 이력 확인**:
+   ```bash
+   bash ${CLAUDE_PLUGIN_ROOT}/lib/rejection-learner.sh stats
+   ```
+   - 3회 이상 거절된 플러그인 제외
+   - 30일 쿨다운 중인 플러그인 제외
+   - 차단된 카테고리의 플러그인 제외
 
 ### Phase 2: 마켓플레이스 스캔
 

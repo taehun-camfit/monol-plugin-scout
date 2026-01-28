@@ -1,0 +1,96 @@
+{
+  "trending": [
+    {
+      "name": "openai-bridge",
+      "description": "OpenAI API integration for Claude Code",
+      "category": "ai",
+      "downloads": 98500,
+      "rating": 4.9,
+      "trendScore": 98,
+      "weeklyGrowth": 23.5
+    },
+    {
+      "name": "tailwind-assist",
+      "description": "Tailwind CSS class suggestions and completion",
+      "category": "frontend",
+      "downloads": 89200,
+      "rating": 4.9,
+      "trendScore": 95,
+      "weeklyGrowth": 18.2
+    },
+    {
+      "name": "prettier-format",
+      "description": "Code formatting with Prettier integration",
+      "category": "productivity",
+      "downloads": 78500,
+      "rating": 4.9,
+      "trendScore": 92,
+      "weeklyGrowth": 15.8
+    },
+    {
+      "name": "react-snippets",
+      "description": "React component snippets and hooks",
+      "category": "frontend",
+      "downloads": 72300,
+      "rating": 4.8,
+      "trendScore": 89,
+      "weeklyGrowth": 14.2
+    },
+    {
+      "name": "langchain-helper",
+      "description": "LangChain development tools",
+      "category": "ai",
+      "downloads": 67800,
+      "rating": 4.7,
+      "trendScore": 87,
+      "weeklyGrowth": 21.5
+    },
+    {
+      "name": "github-actions",
+      "description": "GitHub Actions workflow helper",
+      "category": "devops",
+      "downloads": 67800,
+      "rating": 4.8,
+      "trendScore": 85,
+      "weeklyGrowth": 12.3
+    },
+    {
+      "name": "vercel-deploy",
+      "description": "Vercel deployment helper",
+      "category": "cloud",
+      "downloads": 58900,
+      "rating": 4.8,
+      "trendScore": 84,
+      "weeklyGrowth": 16.7
+    },
+    {
+      "name": "playwright-helper",
+      "description": "Playwright test automation",
+      "category": "testing",
+      "downloads": 48700,
+      "rating": 4.8,
+      "trendScore": 82,
+      "weeklyGrowth": 19.8
+    },
+    {
+      "name": "security-scan",
+      "description": "Security vulnerability scanner",
+      "category": "security",
+      "downloads": 47200,
+      "rating": 4.8,
+      "trendScore": 80,
+      "weeklyGrowth": 25.3
+    },
+    {
+      "name": "commit-commands",
+      "description": "Git commit message generator and automation",
+      "category": "productivity",
+      "downloads": 45200,
+      "rating": 4.9,
+      "trendScore": 78,
+      "weeklyGrowth": 11.5
+    }
+  ],
+  "period": "week",
+  "generatedAt": "2026-01-19T00:00:00Z"
+}

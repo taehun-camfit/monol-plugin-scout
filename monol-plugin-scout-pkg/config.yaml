@@ -58,6 +58,19 @@ cleanup:
   # 자동 정리 (false = 수동 확인)
   auto_remove: false
 
+# 거절 학습 설정
+rejection_learning:
+  # 활성화
+  enabled: true
+  # 재추천 쿨다운 (일)
+  cooldown_days: 30
+  # 영구 차단 임계값 (회)
+  block_threshold: 3
+  # 카테고리 차단 임계값 (회)
+  category_block_threshold: 5
+  # 거절 이유 추적
+  track_reasons: true
+
 # 캐시 설정
 cache:
   enabled: true
@@ -74,3 +87,18 @@ notifications:
   security_updates: true
   # 업데이트 가능 알림
   available_updates: true
+
+# ============================================================================
+# 서버 동기화 설정 (monol-server)
+# ============================================================================
+# 동기화 활성화 (false로 비활성화)
+sync_enabled: true
+
+# monol-server URL
+sync_server_url: "http://localhost:3030"
+
+# 팀 ID (선택사항, 팀 대시보드용)
+sync_team: ""
+
+# 요청 타임아웃 (초)
+sync_timeout: 5

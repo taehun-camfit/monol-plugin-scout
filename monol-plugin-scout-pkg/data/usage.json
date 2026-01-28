@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-07T00:00:00.000Z",
+  "lastUpdated": "2026-01-18T19:43:41Z",
   "config": {
     "unusedThresholdDays": 30,
     "lowUsageThreshold": 3
@@ -8,27 +8,27 @@
     "typescript-lsp": {
       "installed": "2026-01-07",
       "usageCount": 8,
-      "lastUsed": "2026-01-07"
+      "lastUsed": "2026-01-19"
     },
     "code-review": {
       "installed": "2026-01-07",
       "usageCount": 15,
-      "lastUsed": "2026-01-07"
+      "lastUsed": "2026-01-19"
     },
     "commit-commands": {
       "installed": "2026-01-07",
       "usageCount": 23,
-      "lastUsed": "2026-01-07"
+      "lastUsed": "2026-01-19"
     },
     "sentry": {
       "installed": "2026-01-07",
       "usageCount": 5,
-      "lastUsed": "2026-01-06"
+      "lastUsed": "2026-01-18"
     },
     "slack": {
       "installed": "2026-01-07",
       "usageCount": 3,
-      "lastUsed": "2026-01-05"
+      "lastUsed": "2026-01-15"
     },
     "plugin-dev": {
       "installed": "2025-11-15",
@@ -38,12 +38,105 @@
     "hookify": {
       "installed": "2026-01-07",
       "usageCount": 1,
-      "lastUsed": "2026-01-07"
+      "lastUsed": "2026-01-10"
     },
     "old-unused-plugin": {
       "installed": "2025-10-01",
       "usageCount": 2,
       "lastUsed": "2025-10-15"
+    },
+    "scout": {
+      "installed": "2026-01-19",
+      "usageCount": 3,
+      "lastUsed": "2026-01-19"
+    },
+    "audit": {
+      "installed": "2026-01-19",
+      "usageCount": 1,
+      "lastUsed": "2026-01-19"
+    },
+    "console": {
+      "installed": "2026-01-19",
+      "usageCount": 1,
+      "lastUsed": "2026-01-19"
     }
+  },
+  "users": {
+    "kent": {
+      "plugins": {
+        "commit-commands": {
+          "usageCount": 15,
+          "lastUsed": "2026-01-19"
+        },
+        "code-review": {
+          "usageCount": 10,
+          "lastUsed": "2026-01-19"
+        },
+        "typescript-lsp": {
+          "usageCount": 5,
+          "lastUsed": "2026-01-19"
+        },
+        "scout": {
+          "usageCount": 3,
+          "lastUsed": "2026-01-19"
+        }
+      },
+      "sessions": 12,
+      "lastActive": "2026-01-19",
+      "firstSeen": "2026-01-07"
+    },
+    "john": {
+      "plugins": {
+        "commit-commands": {
+          "usageCount": 5,
+          "lastUsed": "2026-01-18"
+        },
+        "code-review": {
+          "usageCount": 3,
+          "lastUsed": "2026-01-18"
+        },
+        "sentry": {
+          "usageCount": 3,
+          "lastUsed": "2026-01-18"
+        }
+      },
+      "sessions": 8,
+      "lastActive": "2026-01-18",
+      "firstSeen": "2026-01-10"
+    },
+    "jane": {
+      "plugins": {
+        "commit-commands": {
+          "usageCount": 3,
+          "lastUsed": "2026-01-17"
+        },
+        "typescript-lsp": {
+          "usageCount": 3,
+          "lastUsed": "2026-01-17"
+        },
+        "code-review": {
+          "usageCount": 2,
+          "lastUsed": "2026-01-17"
+        }
+      },
+      "sessions": 5,
+      "lastActive": "2026-01-17",
+      "firstSeen": "2026-01-12"
+    },
+    "김태훈": {
+      "plugins": {
+        "console": {
+          "usageCount": 1,
+          "lastUsed": "2026-01-19"
+        }
+      },
+      "sessions": 1,
+      "lastActive": "2026-01-19",
+      "firstSeen": "2026-01-19"
+    }
+  },
+  "sessions": {
+    "total": 26,
+    "thisWeek": 15
   }
 }
